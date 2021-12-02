@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Event;
 import bgu.spl.mics.MicroService;
 
 /**
@@ -12,6 +13,7 @@ import bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class StudentService extends MicroService {
+
     public StudentService(String name) {
         super("Change_This_Name");
         // TODO Implement this
@@ -21,5 +23,13 @@ public class StudentService extends MicroService {
     protected void initialize() {
         // TODO Implement this
 
+    }
+
+    /**
+     * our functions
+     */
+
+    public <T ,E extends Event<T> >boolean ExistsEvent(Class<E> type) {
+        //TODO - need to add the container that will have the must efficent way to search the event O(1)
     }
 }
