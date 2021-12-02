@@ -22,6 +22,7 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
+    // TODO - add private callback container
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
