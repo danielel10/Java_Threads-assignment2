@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
-import java.util.LinkedList;
+import java.util.*;
+
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -9,7 +10,9 @@ import java.util.LinkedList;
  */
 public class MessageBusImpl implements MessageBus {
 
+	private  Map<Future,Event> futureEventMap;
 	private LinkedList<LinkedList<Event>> EventsList;
+	private Vector<Queue> microservicesQ;
 
 	private static MessageBusImpl instance = null;
 
@@ -80,9 +83,44 @@ public class MessageBusImpl implements MessageBus {
 	 * our function
 	 */
 
-	private void test() {
-
+	@Override
+	public boolean IsEventSub(Event type, MicroService m) {
+		return true;
 	}
-	
 
+	@Override
+	public boolean IsBroadcastSub(Broadcast type, MicroService m) {
+		return true;
+	}
+
+	@Override
+	public <T> boolean IsFutureAdded(Future<T> f) {
+		//TODO - we will search with the id of object
+		return false;
+	}
+
+	@Override
+	public boolean IsBroadcastRecived(Broadcast type) {
+		return false;
+	}
+
+	@Override
+	public boolean IsFuturecomleted(Event e) {
+		return false;
+	}
+
+	@Override
+	public boolean IsRegisterd(MicroService m) {
+		return false;
+	}
+
+	@Override
+	public boolean IsUnregistered(MicroService m) {
+		return false;
+	}
+
+	@Override
+	public boolean HaveRecivedMessage(MicroService m) {
+		return false;
+	}
 }

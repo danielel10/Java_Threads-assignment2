@@ -93,5 +93,47 @@ public interface MessageBus {
      *                              to became available.
      */
     Message awaitMessage(MicroService m) throws InterruptedException;
-    
+
+    /**
+     * our functions
+     */
+
+    /**
+     *
+     * @param type event that we want to see if subed to
+     * @param m microservice that we want to chek
+     * @return true if subbed
+     */
+    boolean IsEventSub(Event type,MicroService m);
+
+    /**
+     *
+     * @param type Broadcast that we want to see if subed to
+     * @param m microservice that we want to chek
+     * @return true if subbed
+     */
+    boolean IsBroadcastSub(Broadcast type,MicroService m);
+
+    /**
+     *
+     * @return true if was added
+     */
+    <T> boolean IsFutureAdded(Future<T> f);
+
+    /**
+     *
+     * @return true if was recived
+     */
+    boolean IsBroadcastRecived(Broadcast type);
+
+    boolean IsFuturecomleted(Event e);
+
+    boolean IsRegisterd(MicroService m);
+
+    boolean IsUnregistered(MicroService m);
+
+    boolean HaveRecivedMessage(MicroService m);
+
+
+
 }
