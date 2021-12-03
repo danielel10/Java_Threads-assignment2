@@ -24,12 +24,4 @@ public class StudentService extends MicroService {
         // TODO Implement this
 
     }
-
-    /**
-     * our functions
-     */
-
-    public <T ,E extends Event<T> >boolean ExistsEvent(Class<E> type) {
-        //TODO - need to add the container that will have the must efficent way to search the event O(1)
-    }
 }
