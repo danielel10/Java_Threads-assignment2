@@ -9,10 +9,20 @@ public class DataBatch {
     private Data data;
     private int start_index;
     private boolean CPUDone;
+    private GPU who_sent;
 
     public DataBatch(Data d,int start){
         data = d;
         start_index = start;
+        CPUDone = false;
+    }
+
+    public void setCPUDone(boolean x) {
+        CPUDone = x;
+    }
+
+    public boolean isCPUDone() {
+        return CPUDone;
     }
     
 }

@@ -22,30 +22,70 @@ public class GPU {
 
     }
 
+    /**
+     *
+     * @param dataBatch the databatch we want to process
+     * @pre: databatch not processed
+     * @post: cluster recived batch to handle
+     * @return true after sent
+     */
     //maybe change to synchronized
-    public boolean sendToCpu(DataBatch dataBatch){
+    public boolean sendTocluster(DataBatch dataBatch){
         return true;
     }
 
+    /**
+     *
+     * @param dataBatch that we want to train
+     * @pre: processed data from cpu
+     * @post: databatch is processed and processed amount added to data
+     *         if we finshed we check if all the data is processed
+     *        total_time_worked = (currenttimed worked on) + @pre(total_time_worked)
+     */
     public void train(DataBatch dataBatch){
             //trains the proccessed data, if the vram capacity is 0 we need to notify all to wake the service up
             // if the total data is equal to proccessed data we notify all to wake the proccess to finish the event
             //for each procces we update total time spent
     }
 
+    /**
+     *
+     * @param data data need to procces
+     * @pre: gpu wasent proccesing
+     * @post: gpu start to procces
+     * return: true indication
+     */
     public void SetData(Data data,Model model){
         currenData = data;
         this.model = model;
     }
 
+    /**
+     *
+     * @param degree testing model
+     * @pre: none result for the test model
+     * @post: getting result to the test model
+     *        by probability depend on the student degree
+     */
     public int TestData(Student.Degree degree) {
         return 0; //need to be probabilty function
     }
 
+    /**
+     *
+     * @return the time that the cpu have worked on
+     */
     public int getTotalTime(){
         return TotalTime;
     }
 
+    /**
+     *
+     * @param c cluster we are connected to
+     * @pre: cluster created
+     * @post: cpu connected to cluster
+     * @return true when done
+     */
     public boolean setCluster(Cluster c) {
         cluster = c;
         return true;

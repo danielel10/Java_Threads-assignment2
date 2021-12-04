@@ -26,8 +26,11 @@ public class Future<T> {
      * This is a blocking method! It waits for the computation in case it has
      * not been completed.
      * <p>
+	 * @pre: future isn't null
+	 * @post: if future has been resolve so result different from null
+	 * 		  else we are blocked
      * @return return the result of type T if it is available, if not wait until it is available.
-     * 	       
+     *
      */
 	public T get() {
 		//TODO: implement this.
@@ -36,6 +39,8 @@ public class Future<T> {
 	
 	/**
      * Resolves the result of this Future object.
+	 * @pre: result is null
+	 * @post: result isn't null
      */
 	public void resolve (T result) {
 		//TODO: implement this.
@@ -43,6 +48,7 @@ public class Future<T> {
 	
 	/**
      * @return true if this object has been resolved, false otherwise
+	 *
      */
 	public boolean isDone() {
 		//TODO: implement this.
@@ -54,11 +60,14 @@ public class Future<T> {
      * This method is non-blocking, it has a limited amount of time determined
      * by {@code timeout}
      * <p>
-     * @param timout 	the maximal amount of time units to wait for the result.
+     * @param timeout 	the maximal amount of time units to wait for the result.
      * @param unit		the {@link TimeUnit} time units to wait.
      * @return return the result of type T if it is available, if not, 
      * 	       wait for {@code timeout} TimeUnits {@code unit}. If time has
      *         elapsed, return null.
+	 * @pre: future isn't null
+	 * @post: if future has been resolve so result different from null
+	 * 		  else we are blocked for a specific timeout, and we get null
      */
 	public T get(long timeout, TimeUnit unit) {
 		//TODO: implement this.

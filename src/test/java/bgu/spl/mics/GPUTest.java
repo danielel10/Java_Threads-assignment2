@@ -34,7 +34,6 @@ public class GPUTest {
         cpu = new CPU(4);
         v2.add(cpu);
         cluster = Cluster.getInstance(v1,v2);
-        gpu.setCluster(cluster);
         cpu.setCluster(cluster);
         data = new Data(Datas,1000);
         batch = new DataBatch(data,0);
@@ -44,25 +43,25 @@ public class GPUTest {
 
     @Test
     public void testsetCluster() {
-        assertTrue(gpu.setCluster(cluster) &
-        cpu.setCluster(cluster));
+        assertTrue(gpu.setCluster(cluster));
+        assertEquals(gpu,cluster.getGPU());
     }
 
     @Test
-    public void testsendToCpu() {
-        boolean result = gpu.sendToCpu(batch);
+    public void testsendTocluster() {
+        boolean result = gpu.sendTocluster(batch);
         assertTrue(result);
     }
 
     @Test
     public void testtrain(){
-        gpu.sendToCpu(batch);
+        gpu.sendTocluster(batch);
         long startTime = System.currentTimeMillis();
         gpu.train(batch);
         long estimatedTime = System.currentTimeMillis() - startTime;
         //from our example jason file
         assertTrue(estimatedTime >= 50);
-        assertEquals(data.HowManyProcessed(),1);
+        assertEquals(data.HowManyProcessed(),1000);
         assertTrue(data.IsProcessed());
     }
 
@@ -74,7 +73,7 @@ public class GPUTest {
 
     @Test
     public void testTestData(){
-        double high = 0.2;
+        double high = 0.9;
         double low = 0.1;
         assertTrue(gpu.TestData(student.getStatus()) == high | gpu.TestData(student.getStatus()) == low );
     }

@@ -14,6 +14,7 @@ public class Cluster {
 
 	private Vector<GPU> GPUvector;
 	private Vector<CPU> CPUvector;
+	//Statistics!
 
 	/**
      * Retrieves the single instance of this class.
@@ -28,6 +29,14 @@ public class Cluster {
 		if(instance == null)
 			instance = new Cluster(v1, v2);
 		return instance;
+	}
+
+	public CPU getCPU() {
+		return CPUvector.firstElement();
+	}
+
+	public GPU getGPU() {
+		return GPUvector.firstElement();
 	}
 
 
