@@ -17,9 +17,9 @@ public class GPU {
     private Data currenData; //Total data we are working on, need to recive from event
     private int TotalTime; //for ticks, every time timeservice wants it he can have it
 
-    public GPU(String type,Cluster c) { //constructor
+    public GPU(String type) { //constructor
         //TODO
-        cluster = c;
+
     }
 
     //maybe change to synchronized
@@ -38,10 +38,18 @@ public class GPU {
         this.model = model;
     }
 
+    public int TestData(Student.Degree degree) {
+        return 0; //need to be probabilty function
+    }
+
     public int getTotalTime(){
         return TotalTime;
     }
 
+    public boolean setCluster(Cluster c) {
+        cluster = c;
+        return true;
+    }
 
 
 }

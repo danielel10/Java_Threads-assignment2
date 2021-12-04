@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.*;
+import bgu.spl.mics.MessageBusImpl;
 
 /**
  * Passive object representing the cluster.
@@ -10,13 +12,23 @@ package bgu.spl.mics.application.objects;
  */
 public class Cluster {
 
+	private Vector<GPU> GPUvector;
+	private Vector<CPU> CPUvector;
 
 	/**
      * Retrieves the single instance of this class.
      */
-	public static Cluster getInstance() {
-		//TODO: Implement this
-		return null;
+	private static Cluster instance = null;
+
+	private Cluster(Vector<GPU> v1, Vector<CPU> v2) {
+		//TODO - add constractor
 	}
+
+	public static synchronized Cluster getInstance(Vector<GPU> v1, Vector<CPU> v2) {
+		if(instance == null)
+			instance = new Cluster(v1, v2);
+		return instance;
+	}
+
 
 }

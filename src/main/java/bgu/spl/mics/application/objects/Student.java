@@ -12,10 +12,22 @@ public class Student {
         MSc, PhD
     }
 
-    private int name;
+    private String name;
     private String department;
     private Degree status;
     private int publications;
     private int papersRead;
+
+    public Student(String n, String depar, String s) {
+        name = n;
+        department = depar;
+        //TODO - need to find out the Degree
+        publications = 0;
+        papersRead = 0;
+    }
+
+    public Degree getStatus() {
+        return status;
+    }
 
 }

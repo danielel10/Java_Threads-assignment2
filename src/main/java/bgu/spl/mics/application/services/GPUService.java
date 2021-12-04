@@ -24,6 +24,8 @@ public class GPUService extends MicroService {
 
     }
 
+
+    //first thing when run is initiated need  to add to the GPU the Data and the model.
     //recive all relevant data from event
     //devide by 1000 and set the number of batches we need to train
     //while(GPU.VramCapacity != 0) send batches, else wait for the GPU to notify we have more place
