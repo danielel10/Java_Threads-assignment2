@@ -23,4 +23,9 @@ public class GPUService extends MicroService {
         // TODO Implement this
 
     }
+
+    //recive all relevant data from event
+    //devide by 1000 and set the number of batches we need to train
+    //while(GPU.VramCapacity != 0) send batches, else wait for the GPU to notify we have more place
+    //while(total data is not proccessed) wait for GPU to notify and after that complete event.
 }

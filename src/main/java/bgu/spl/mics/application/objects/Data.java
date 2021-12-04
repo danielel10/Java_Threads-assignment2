@@ -15,4 +15,17 @@ public class Data {
     private Type type;
     private int processed;
     private int size;
+    private boolean isDone;
+
+    public Data(String type,int size) {
+        //TODO
+    }
+
+    public int HowManyProcessed(){
+        return processed;
+    }
+
+    public boolean IsProcessed(){
+        return isDone;
+    }
 }
