@@ -22,6 +22,7 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
+    private MessageBusImpl messageBus;
     // TODO - add private callback container\
     //  private field indactor of events that I am sub to
 
@@ -31,6 +32,7 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
+        this.messageBus = MessageBusImpl.getInstance();
     }
 
     /**

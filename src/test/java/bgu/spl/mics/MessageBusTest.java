@@ -87,7 +87,7 @@ public class MessageBusTest {
 
     @Test
     public void testAwaitMessage() {
-        if (messageBus.IsRegisterd(eventHandlerService))
+        if (!messageBus.IsRegisterd(eventHandlerService))
             assertThrows(IllegalStateException.class,() -> messageBus.awaitMessage(eventHandlerService));
         try {
             messageBus.awaitMessage(eventHandlerService);

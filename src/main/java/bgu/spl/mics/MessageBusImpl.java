@@ -11,8 +11,8 @@ import java.util.*;
 public class MessageBusImpl implements MessageBus {
 
 	private  Map<Future,Event> futureEventMap;
-	private LinkedList<LinkedList<Event>> EventsList;
-	private Vector<Queue> microservicesQ;
+	private LinkedList<LinkedList<MicroService>> MessagesList;
+	private Map<Queue,MicroService> microservicesQ;
 
 	private static MessageBusImpl instance = null;
 
