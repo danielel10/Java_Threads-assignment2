@@ -73,8 +73,8 @@ public class GPUTest {
 
     @Test
     public void testTestData(){
-        double high = 0.9;
-        double low = 0.1;
+        double high = 0.6;
+        double low = 0.8;
         assertTrue(gpu.TestData(student.getStatus()) == high | gpu.TestData(student.getStatus()) == low );
     }
 

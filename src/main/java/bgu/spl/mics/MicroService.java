@@ -24,6 +24,7 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
+
     private Map<Class,Callback> BroadcastCallbacks;
     private Map<Class,Callback> EventCallbacks;
     private MessageBusImpl messageBus;
@@ -35,6 +36,7 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
         this.name = name;
         messageBus = MessageBusImpl.getInstance();
+
     }
 
     /**

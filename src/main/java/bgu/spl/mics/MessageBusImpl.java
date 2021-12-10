@@ -16,6 +16,7 @@ public class MessageBusImpl implements MessageBus {
 	private Map<MicroService,Queue<Message>> MicroserivesQ;
 	Object lock = new Object();
 
+
 	private static MessageBusImpl instance = null;
 
 	//singelton creation
