@@ -1,5 +1,7 @@
 package bgu.spl.mics;
 
+import java.util.Map;
+
 /**
  * The MicroService is an abstract class that any micro-service in the system
  * must extend. The abstract MicroService class is responsible to get and
@@ -22,8 +24,9 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
-    // TODO - add private callback container\
-    //  private field indactor of events that I am sub to
+    private Map<Class,Callback> BroadcastCallbacks;
+    private Map<Class,Callback> EventCallbacks;
+    private MessageBusImpl messageBus;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -31,6 +34,7 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
+        messageBus = MessageBusImpl.getInstance();
     }
 
     /**
@@ -55,7 +59,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-        //TODO: implement this.
+        EventCallbacks.put(type,callback);
+        messageBus.subscribeEvent(type,this);
     }
 
     /**
@@ -79,7 +84,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-        //TODO: implement this.
+        BroadcastCallbacks.put(type,callback);
+        messageBus.subscribeBroadcast(type,this);
     }
 
     /**
@@ -95,8 +101,8 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-        //TODO: implement this.
-        return null; //TODO: delete this line :)
+        Future<T> tosend = messageBus.sendEvent(e);
+        return tosend;
     }
 
     /**
