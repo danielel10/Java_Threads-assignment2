@@ -24,10 +24,17 @@ public class GPUService extends MicroService {
 
     }
 
+/**
+    GPU.train
+    for(i = 0; i< GPU.total; i++) {
+        sendBroadcast(tickbroadcast);
+    }
+
 
     //first thing when run is initiated need  to add to the GPU the Data and the model.
     //recive all relevant data from event
     //devide by 1000 and set the number of batches we need to train
     //while(GPU.VramCapacity != 0) send batches, else wait for the GPU to notify we have more place
     //while(total data is not proccessed) wait for GPU to notify and after that complete event.
+ */
 }

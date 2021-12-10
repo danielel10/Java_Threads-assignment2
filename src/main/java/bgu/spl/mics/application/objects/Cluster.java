@@ -39,5 +39,9 @@ public class Cluster {
 		return GPUvector.firstElement();
 	}
 
+	public void SendBatch (DataBatch dataBatch) {
+
+	}
+
 
 }

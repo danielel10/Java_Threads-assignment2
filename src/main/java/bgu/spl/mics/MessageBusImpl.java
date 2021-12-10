@@ -120,8 +120,8 @@ public class MessageBusImpl implements MessageBus {
 		if(MicroserivesQ.get(m) == null) {
 			throw new IllegalStateException();
 		}
-		if(MicroserivesQ.get(m).isEmpty()) {
-			return null;
+		while (MicroserivesQ.get(m).isEmpty()) {
+			wait();
 		}
 		return MicroserivesQ.get(m).remove();
 	}

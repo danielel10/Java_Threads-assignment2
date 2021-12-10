@@ -28,4 +28,8 @@ public class Data {
     public boolean IsProcessed(){
         return isDone;
     }
+
+    public void setProcessed(int processed) {
+        this.processed =+ processed;
+    }
 }

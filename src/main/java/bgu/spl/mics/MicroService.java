@@ -24,7 +24,6 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
-
     private Map<Class,Callback> BroadcastCallbacks;
     private Map<Class,Callback> EventCallbacks;
     private MessageBusImpl messageBus;
@@ -36,7 +35,6 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
         this.name = name;
         messageBus = MessageBusImpl.getInstance();
-
     }
 
     /**
@@ -114,7 +112,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        //TODO: implement this.
+        messageBus.sendBroadcast(b);
     }
 
     /**
@@ -128,13 +126,14 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-        //TODO: implement this.
+        messageBus.complete(e,result);
     }
 
     /**
      * this method is called once when the event loop starts.
      */
     protected abstract void initialize();
+    // here we do register
 
     /**
      * Signals the event loop that it must terminate after handling the current
@@ -159,8 +158,15 @@ public abstract class MicroService implements Runnable {
     @Override
     public final void run() {
         initialize();
-        while (!terminated) {
-            System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
+        while (!terminated ) {
+            try {
+               Message message =  messageBus.awaitMessage(this);
+               while (message == null)
+                   wait();
+               EventCallbacks.get(message).call(message);
+            }
+            catch (Exception e) {}
+
         }
     }
 

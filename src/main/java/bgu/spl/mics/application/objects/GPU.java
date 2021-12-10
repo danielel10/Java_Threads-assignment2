@@ -18,7 +18,18 @@ public class GPU {
     private int TotalTime; //for ticks, every time timeservice wants it he can have it
 
     public GPU(String type) { //constructor
-        //TODO
+        switch (type) {
+            case "RTX3090":
+                this.type = Type.RTX3090;
+                VramCapacity = 32;
+            case "RTX2080":
+                this.type = Type.RTX2080;
+                VramCapacity = 16;
+            case "GTX1080":
+                this.type = Type.GTX1080;
+                VramCapacity = 8;
+        }
+        TotalTime = 0;
 
     }
 
@@ -29,9 +40,16 @@ public class GPU {
      * @post: cluster recived batch to handle
      * @return true after sent
      */
-    //maybe change to synchronized
     public boolean sendTocluster(DataBatch dataBatch){
-        return true;
+       while (VramCapacity == 0)
+           try {
+               //notifyall will be in train
+               wait();
+           }
+       catch (Exception e) {}
+        cluster.SendBatch(dataBatch);
+        VramCapacity =- VramCapacity;
+       return true;
     }
 
     /**
@@ -43,6 +61,23 @@ public class GPU {
      *        total_time_worked = (currenttimed worked on) + @pre(total_time_worked)
      */
     public void train(DataBatch dataBatch){
+        switch (type) {
+            case RTX3090:
+                TotalTime = 1;
+                currenData.setProcessed(dataBatch.getStart_index());
+                VramCapacity =+ 1;
+                notifyAll();
+            case RTX2080:
+                TotalTime = 2;
+                currenData.setProcessed(dataBatch.getStart_index());
+                VramCapacity =+ 1;
+                notifyAll();
+            case GTX1080:
+                TotalTime = 4;
+                currenData.setProcessed(dataBatch.getStart_index());
+                VramCapacity =+ 1;
+                notifyAll();
+        }
             //trains the proccessed data, if the vram capacity is 0 we need to notify all to wake the service up
             // if the total data is equal to proccessed data we notify all to wake the proccess to finish the event
             //for each procces we update total time spent

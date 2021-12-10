@@ -24,5 +24,8 @@ public class DataBatch {
     public boolean isCPUDone() {
         return CPUDone;
     }
-    
+
+    public int getStart_index() {
+        return start_index;
+    }
 }

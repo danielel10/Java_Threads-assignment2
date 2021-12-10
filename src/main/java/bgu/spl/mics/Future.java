@@ -33,8 +33,13 @@ public class Future<T> {
      *
      */
 	public T get() {
-		//TODO: implement this.
-		return null;
+		while (!isDone()) {
+			try {
+				wait();
+			} catch (Exception e) {
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -43,7 +48,9 @@ public class Future<T> {
 	 * @post: result isn't null
      */
 	public void resolve (T result) {
-		//TODO: implement this.
+		this.result = result;
+		notifyAll();
+
 	}
 	
 	/**
@@ -51,8 +58,7 @@ public class Future<T> {
 	 *
      */
 	public boolean isDone() {
-		//TODO: implement this.
-		return false;
+		return result != null;
 	}
 	
 	/**
@@ -70,8 +76,58 @@ public class Future<T> {
 	 * 		  else we are blocked for a specific timeout, and we get null
      */
 	public T get(long timeout, TimeUnit unit) {
-		//TODO: implement this.
-		return null;
+		if (result != null) {
+			return result;
+		}
+		else {
+			switch (unit) {
+				case DAYS:
+					try {
+						Thread.sleep(TimeUnit.DAYS.toMillis(timeout));
+						return result;
+					}
+					catch (Exception e) {}
+				case HOURS:
+					try {
+						Thread.sleep(TimeUnit.HOURS.toMillis(timeout));
+						return result;
+					}
+					catch (Exception e) {}
+				case MINUTES:
+					try {
+						Thread.sleep(TimeUnit.MINUTES.toMillis(timeout));
+						return result;
+					}
+					catch (Exception e) {}
+				case SECONDS:
+					try {
+						Thread.sleep(TimeUnit.SECONDS.toMillis(timeout));
+						return result;
+					}
+					catch (Exception e) {}
+				case MILLISECONDS:
+					try {
+						Thread.sleep(timeout);
+						return result;
+					}
+					catch (Exception e) {}
+				case NANOSECONDS:
+					try {
+						Thread.sleep(TimeUnit.NANOSECONDS.toMillis(timeout));
+						return result;
+					}
+					catch (Exception e) {}
+				case MICROSECONDS:
+					try {
+						Thread.sleep(TimeUnit.MICROSECONDS.toMillis(timeout));
+						return result;
+					}
+					catch (Exception e) {}
+
+			}
+			return result;
+		}
+
 	}
 
 }
