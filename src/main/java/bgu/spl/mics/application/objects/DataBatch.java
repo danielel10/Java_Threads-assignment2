@@ -17,8 +17,12 @@ public class DataBatch {
         CPUDone = false;
     }
 
-    public void setCPUDone(boolean x) {
-        CPUDone = x;
+    public void setCPUDone() {
+        CPUDone = true;
+    }
+
+    public void setGPU(GPU gpu) {
+        who_sent = gpu;
     }
 
     public boolean isCPUDone() {

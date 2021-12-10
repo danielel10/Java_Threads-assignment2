@@ -48,9 +48,9 @@ public class CPU {
      * @return processed databatch
      */
     public DataBatch processData() {
-        //here we add the total time worked
-        // when done processing we set cpudone to true
-        return dataBatches.poll();
+        DataBatch dataBatch = dataBatches.remove();
+        dataBatch.setCPUDone();
+        return dataBatch;
     }
 
     /**

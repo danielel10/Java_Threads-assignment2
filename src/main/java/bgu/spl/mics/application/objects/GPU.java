@@ -15,21 +15,24 @@ public class GPU {
     private Cluster cluster; //the computer
     public int VramCapacity; //free capacity to use in VRAM - when 0 we wait that we have free
     private Data currenData; //Total data we are working on, need to recive from event
-    private int TotalTime; //for ticks, every time timeservice wants it he can have it
+    private int tick; //for ticks, every time timeservice wants it he can have it
 
     public GPU(String type) { //constructor
         switch (type) {
             case "RTX3090":
                 this.type = Type.RTX3090;
                 VramCapacity = 32;
+                tick = 1;
             case "RTX2080":
                 this.type = Type.RTX2080;
                 VramCapacity = 16;
+                tick = 2;
             case "GTX1080":
                 this.type = Type.GTX1080;
                 VramCapacity = 8;
+                tick = 4;
         }
-        TotalTime = 0;
+        tick = 0;
 
     }
 
@@ -47,7 +50,7 @@ public class GPU {
                wait();
            }
        catch (Exception e) {}
-        cluster.SendBatch(dataBatch);
+        cluster.SendBatchCpu(dataBatch);
         VramCapacity =- VramCapacity;
        return true;
     }
@@ -63,17 +66,14 @@ public class GPU {
     public void train(DataBatch dataBatch){
         switch (type) {
             case RTX3090:
-                TotalTime = 1;
                 currenData.setProcessed(dataBatch.getStart_index());
                 VramCapacity =+ 1;
                 notifyAll();
             case RTX2080:
-                TotalTime = 2;
                 currenData.setProcessed(dataBatch.getStart_index());
                 VramCapacity =+ 1;
                 notifyAll();
             case GTX1080:
-                TotalTime = 4;
                 currenData.setProcessed(dataBatch.getStart_index());
                 VramCapacity =+ 1;
                 notifyAll();
@@ -103,15 +103,15 @@ public class GPU {
      *        by probability depend on the student degree
      */
     public int TestData(Student.Degree degree) {
-        return 0; //need to be probabilty function
+        return  (int)(Math.random()*10);
     }
 
     /**
      *
      * @return the time that the cpu have worked on
      */
-    public int getTotalTime(){
-        return TotalTime;
+    public int getTick(){
+        return tick;
     }
 
     /**

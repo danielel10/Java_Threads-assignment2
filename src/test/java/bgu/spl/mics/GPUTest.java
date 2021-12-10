@@ -1,14 +1,10 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.objects.*;
-import bgu.spl.mics.example.messages.ExampleEvent;
-import bgu.spl.mics.example.services.ExampleEventHandlerService;
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotEquals;
@@ -83,7 +79,7 @@ public class GPUTest {
         long start_time = System.currentTimeMillis();
         testtrain();
         long finish_time = System.currentTimeMillis();
-        int total = gpu.getTotalTime();
+        int total = gpu.getTick();
         assertTrue(finish_time - start_time >=total);
 
     }

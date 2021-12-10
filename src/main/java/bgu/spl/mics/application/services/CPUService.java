@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.objects.Cluster;
 
 /**
  * CPU service is responsible for handling the {@link DataPreProcessEvent}.
@@ -10,6 +11,7 @@ import bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class CPUService extends MicroService {
+    private Cluster cluster;
     public CPUService(String name) {
         super("Change_This_Name");
         // TODO Implement this
@@ -22,6 +24,10 @@ public class CPUService extends MicroService {
     }
 
     /**
+     *  CPU.process
+     *     for(i = 0; i< GPU.total; i++) {
+     *         sendBroadcast(tickbroadcast);
+     *     }
      * CPU service is responsible for managing the processing of the batches.
      * first thing when the service runs it checks its Q, if Q is empty, it waits.
      * when we get a new batch from gpu we add it to our q from the cluster and here we tell the cpu to process it.

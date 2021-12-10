@@ -2,6 +2,7 @@ package bgu.spl.mics.application.objects;
 
 import java.util.*;
 import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.application.services.GPUService;
 
 /**
  * Passive object representing the cluster.
@@ -12,8 +13,10 @@ import bgu.spl.mics.MessageBusImpl;
  */
 public class Cluster {
 
+	private Vector<GPUService> GPUServicesvector;
 	private Vector<GPU> GPUvector;
 	private Vector<CPU> CPUvector;
+
 	//Statistics!
 
 	/**
@@ -39,9 +42,13 @@ public class Cluster {
 		return GPUvector.firstElement();
 	}
 
-	public void SendBatch (DataBatch dataBatch) {
+	public void SendBatchCpu (DataBatch dataBatch) {
 
 	}
+	public void SendBatchtoGPU(DataBatch dataBatch) {
+		//sending start index to GPU
+	}
+
 
 
 }
