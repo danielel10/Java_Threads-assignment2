@@ -32,4 +32,8 @@ public class DataBatch {
     public int getStart_index() {
         return start_index;
     }
+
+    public GPU getWho_sent() {
+        return who_sent;
+    }
 }

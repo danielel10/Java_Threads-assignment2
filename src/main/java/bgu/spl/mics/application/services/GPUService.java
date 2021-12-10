@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.objects.Cluster;
 import bgu.spl.mics.application.objects.Data;
 import bgu.spl.mics.application.objects.DataBatch;
 
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public class GPUService extends MicroService {
     private Map<Integer,DataBatch> dataBatchIntegerMap;
-
+    private Cluster cluster;
     public GPUService(String name) {
         super("Change_This_Name");
         // TODO Implement this
@@ -29,6 +30,9 @@ public class GPUService extends MicroService {
 
     }
 
+    public void train(Integer data_batch_index) {
+        //TODO
+    }
 /**
     GPU.train
     for(i = 0; i< GPU.total; i++) {

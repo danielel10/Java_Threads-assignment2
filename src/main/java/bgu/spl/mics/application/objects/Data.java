@@ -15,10 +15,18 @@ public class Data {
     private Type type;
     private int processed;
     private int size;
-    private boolean isDone;
 
     public Data(String type,int size) {
-        //TODO
+        switch (type) {
+            case "Images":
+                this.type = Type.Images;
+            case "Text":
+                this.type = Type.Text;
+            case "Tabular":
+                this.type = Type.Tabular;
+        }
+        this.size = size;
+        processed = 0;
     }
 
     public int HowManyProcessed(){
@@ -26,10 +34,10 @@ public class Data {
     }
 
     public boolean IsProcessed(){
-        return isDone;
+        return size == processed;
     }
 
-    public void setProcessed(int processed) {
+    public void addProcessed(int processed) {
         this.processed =+ processed;
     }
 }

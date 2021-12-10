@@ -66,15 +66,15 @@ public class GPU {
     public void train(DataBatch dataBatch){
         switch (type) {
             case RTX3090:
-                currenData.setProcessed(dataBatch.getStart_index());
+                currenData.addProcessed(1000);
                 VramCapacity =+ 1;
                 notifyAll();
             case RTX2080:
-                currenData.setProcessed(dataBatch.getStart_index());
+                currenData.addProcessed(1000);
                 VramCapacity =+ 1;
                 notifyAll();
             case GTX1080:
-                currenData.setProcessed(dataBatch.getStart_index());
+                currenData.addProcessed(1000);
                 VramCapacity =+ 1;
                 notifyAll();
         }

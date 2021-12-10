@@ -13,11 +13,10 @@ import bgu.spl.mics.application.services.GPUService;
  */
 public class Cluster {
 
-	private Vector<GPUService> GPUServicesvector;
 	private Vector<GPU> GPUvector;
+	private Map<GPU,GPUService> gpuServiceMap;
 	private Vector<CPU> CPUvector;
-
-	//Statistics!
+	private Statistics statistics;
 
 	/**
      * Retrieves the single instance of this class.
@@ -43,11 +42,35 @@ public class Cluster {
 	}
 
 	public void SendBatchCpu (DataBatch dataBatch) {
+		int minindex = 0;
+		for (int i = 1; i < CPUvector.size(); i++) {
+			if(CPUvector.get(i).getQsize() < CPUvector.get(i - 1).getQsize()) {
+				minindex = i;
+			}
+		}
+		CPUvector.get(minindex).sendBatchToCPU(dataBatch);
 
 	}
 	public void SendBatchtoGPU(DataBatch dataBatch) {
 		//sending start index to GPU
+		gpuServiceMap.get(dataBatch.getWho_sent()).train(dataBatch.getStart_index());
 	}
+	public void addModelToStats(Model m) {
+		statistics.addTrainedModel(m);
+	}
+
+	public void addTotalDataBatchProcessedByCPU() {
+		statistics.addTotalDataBatchProcessedByCPU();
+	}
+
+	public void addTotalcputicks() {
+		statistics.addTotalcputicks();
+	}
+
+	public void addTotalgputicks() {
+		statistics.addTotalgputicks();
+	}
+
 
 
 
