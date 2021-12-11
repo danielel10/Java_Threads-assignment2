@@ -23,17 +23,19 @@ public class GPUService extends MicroService {
     private int currtick; //+1 +1 +1 +1 =4 0
     //total tick
     private Queue<TrainModelEvent> trainModelEvents;
-    private Callback<TestModelEvent> a;
+    private Callback<TestModelEvent> TestModelEventCallback;
+    private Callback<TrainModelEvent> TrainModelEventCallback;
     public GPUService(String name,GPU gpu) {
         super(name + " Service");
         this.gpu = gpu;
         currtick = 0;
-        a = new Callback<TestModelEvent>() {
-            @Override
-            public void call(TestModelEvent c) {
-
-            }
+        TestModelEventCallback = c -> complete(c,gpu.TestData());
+        TrainModelEventCallback = c -> {
+            trainModelEvents.add(c);
         };
+
+
+
 
 
 
@@ -41,12 +43,9 @@ public class GPUService extends MicroService {
 
     @Override
     protected void initialize() {
-        subscribeEvent(TrainModelEvent.class, trainModelEventCallback -> {
-            trainModelEvents.add(trainModelEventCallback);
-        });
-        subscribeEvent(TestModelEvent.class, TestModelEventCallback -> {
-            complete(TestModelEventCallback, gpu.TestData());
-        });
+        subscribeEvent(TrainModelEvent.class, TrainModelEventCallback);
+        subscribeEvent(TestModelEvent.class, TestModelEventCallback);
+
 
     }
 
