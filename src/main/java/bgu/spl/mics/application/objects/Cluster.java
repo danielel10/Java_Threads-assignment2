@@ -57,7 +57,9 @@ public class Cluster {
 	}
 	public void SendBatchtoGPU(DataBatch dataBatch) {
 		//sending start index to GPU
-		gpuServiceMap.get(dataBatch.getWho_sent()).train(dataBatch.getStart_index());
+		GPU gpu = dataBatch.getWho_sent();
+		gpu.reciveFromCPU(dataBatch);
+
 	}
 	public void addModelToStats(Model m) {
 		statistics.addTrainedModel(m);

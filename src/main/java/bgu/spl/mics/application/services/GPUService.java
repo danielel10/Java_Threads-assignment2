@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Message;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.objects.Cluster;
 import bgu.spl.mics.application.objects.Data;
@@ -30,8 +31,15 @@ public class GPUService extends MicroService {
 
     }
 
-    public void train(Integer data_batch_index) {
-        //TODO
+    public void trainModelEventComputing(Message message) {
+        /**
+         * insert message to event q
+         * pull an event from q
+         * process it with cluster
+         * while this happens the processing happens in the cpu service
+         * we wait for a broadcast message telling us that we can train a new batch
+         */
+
     }
 /**
     GPU.train

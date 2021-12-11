@@ -30,5 +30,6 @@ public class CPUService extends MicroService {
      * CPU service is responsible for managing the processing of the batches.
      * first thing when the service runs it checks its Q, if Q is empty, it waits.
      * when we get a new batch from gpu we add it to our q from the cluster and here we tell the cpu to process it.
+     * after we finish processing it we send a broadcast with the GPU name and the start index of the batch
      */
 }

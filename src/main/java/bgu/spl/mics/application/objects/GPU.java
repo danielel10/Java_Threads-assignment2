@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.Queue;
+
 /**
  * Passive object representing a single GPU.
  * Add all the fields described in the assignment as private fields.
@@ -10,6 +12,7 @@ public class GPU {
      * Enum representing the type of the GPU.
      */
     enum Type {RTX3090, RTX2080, GTX1080}
+    private Queue<DataBatch> DataBatchesRecivedFromCPU;
     private Type type; // for constructor
     private Model model;
     private Cluster cluster; //the computer
@@ -126,6 +129,9 @@ public class GPU {
         return true;
     }
 
+    public void reciveFromCPU(DataBatch dataBatch) {
+        DataBatchesRecivedFromCPU.add(dataBatch);
+    }
 
 }
 

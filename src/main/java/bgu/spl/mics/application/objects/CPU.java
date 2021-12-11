@@ -69,6 +69,10 @@ public class CPU {
         return dataBatches.size();
     }
 
+    public void SendToGPU(DataBatch dataBatch) {
+        cluster.SendBatchtoGPU(dataBatch);
+    }
+
 
 
 }
