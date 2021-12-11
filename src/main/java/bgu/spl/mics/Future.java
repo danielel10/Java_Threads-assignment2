@@ -83,43 +83,43 @@ public class Future<T> {
 			switch (unit) {
 				case DAYS:
 					try {
-						Thread.sleep(TimeUnit.DAYS.toMillis(timeout));
+						wait(TimeUnit.DAYS.toMillis(timeout));
 						return result;
 					}
 					catch (Exception e) {}
 				case HOURS:
 					try {
-						Thread.sleep(TimeUnit.HOURS.toMillis(timeout));
+						wait(TimeUnit.HOURS.toMillis(timeout));
 						return result;
 					}
 					catch (Exception e) {}
 				case MINUTES:
 					try {
-						Thread.sleep(TimeUnit.MINUTES.toMillis(timeout));
+						wait(TimeUnit.MINUTES.toMillis(timeout));
 						return result;
 					}
 					catch (Exception e) {}
 				case SECONDS:
 					try {
-						Thread.sleep(TimeUnit.SECONDS.toMillis(timeout));
+						wait(TimeUnit.SECONDS.toMillis(timeout));
 						return result;
 					}
 					catch (Exception e) {}
 				case MILLISECONDS:
 					try {
-						Thread.sleep(timeout);
+						wait(timeout);
 						return result;
 					}
 					catch (Exception e) {}
 				case NANOSECONDS:
 					try {
-						Thread.sleep(TimeUnit.NANOSECONDS.toMillis(timeout));
+						wait(TimeUnit.NANOSECONDS.toMillis(timeout));
 						return result;
 					}
 					catch (Exception e) {}
 				case MICROSECONDS:
 					try {
-						Thread.sleep(TimeUnit.MICROSECONDS.toMillis(timeout));
+						wait(TimeUnit.MICROSECONDS.toMillis(timeout));
 						return result;
 					}
 					catch (Exception e) {}

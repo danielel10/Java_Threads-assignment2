@@ -105,7 +105,7 @@ public class GPU {
      * @post: getting result to the test model
      *        by probability depend on the student degree
      */
-    public int TestData(Student.Degree degree) {
+    public int TestData() {
         return  (int)(Math.random()*10);
     }
 

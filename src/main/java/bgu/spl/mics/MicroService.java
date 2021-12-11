@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
@@ -25,8 +26,8 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
-    private Map<Class,Callback> BroadcastCallbacks;
-    private Map<Class,Callback> EventCallbacks;
+    private Map<Class<? extends Message>,Callback> BroadcastCallbacks;
+    private Map<Class<? extends Message>,Callback> EventCallbacks;
     private MessageBusImpl messageBus;
 
     /**
@@ -36,6 +37,9 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
         this.name = name;
         messageBus = MessageBusImpl.getInstance();
+        BroadcastCallbacks = new HashMap<Class<? extends Message>, Callback>();
+        EventCallbacks = new HashMap<Class<? extends Message>,Callback>();
+
     }
 
     /**
@@ -158,16 +162,16 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        System.out.println("test");
+        messageBus.register(this);
         initialize();
         while (!terminated ) {
             try {
                Message message =  messageBus.awaitMessage(this);
-               while (message == null)
-                   wait();
                if(message.getClass().getName() == "Event")
-                    EventCallbacks.get(message).call(message);
+                    EventCallbacks.get(message.getClass());
                else
-                   BroadcastCallbacks.get(message).call(message);
+                   BroadcastCallbacks.get(message.getClass());
             }
             catch (Exception e) {}
 

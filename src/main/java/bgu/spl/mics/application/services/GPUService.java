@@ -1,33 +1,52 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Callback;
+import bgu.spl.mics.Event;
 import bgu.spl.mics.Message;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.objects.Cluster;
-import bgu.spl.mics.application.objects.Data;
-import bgu.spl.mics.application.objects.DataBatch;
+import bgu.spl.mics.application.messages.TestModelEvent;
+import bgu.spl.mics.application.messages.TrainModelEvent;
+import bgu.spl.mics.application.objects.GPU;
 
-import java.util.Map;
+import java.util.Queue;
 
 /**
  * GPU service is responsible for handling the
  * {@link TrainModelEvent} and {@link TestModelEvent},
- * in addition to sending the {@link DataPreProcessEvent}.
  * This class may not hold references for objects which it is not responsible for.
  *
  * You can add private fields and public methods to this class.
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class GPUService extends MicroService {
-    private Map<Integer,DataBatch> dataBatchIntegerMap;
-    private int currtick;
-    public GPUService(String name) {
-        super("Change_This_Name");
-        // TODO Implement this
+    private GPU gpu;
+    private int currtick; //+1 +1 +1 +1 =4 0
+    //total tick
+    private Queue<TrainModelEvent> trainModelEvents;
+    private Callback<TestModelEvent> a;
+    public GPUService(String name,GPU gpu) {
+        super(name + " Service");
+        this.gpu = gpu;
+        currtick = 0;
+        a = new Callback<TestModelEvent>() {
+            @Override
+            public void call(TestModelEvent c) {
+
+            }
+        };
+
+
+
     }
 
     @Override
     protected void initialize() {
-        // TODO Implement this
+        subscribeEvent(TrainModelEvent.class, trainModelEventCallback -> {
+            trainModelEvents.add(trainModelEventCallback);
+        });
+        subscribeEvent(TestModelEvent.class, TestModelEventCallback -> {
+            complete(TestModelEventCallback, gpu.TestData());
+        });
 
     }
 
