@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -163,7 +164,10 @@ public abstract class MicroService implements Runnable {
                Message message =  messageBus.awaitMessage(this);
                while (message == null)
                    wait();
-               EventCallbacks.get(message).call(message);
+               if(message.getClass().getName() == "Event")
+                    EventCallbacks.get(message).call(message);
+               else
+                   BroadcastCallbacks.get(message).call(message);
             }
             catch (Exception e) {}
 

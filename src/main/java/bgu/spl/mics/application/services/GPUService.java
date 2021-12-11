@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class GPUService extends MicroService {
     private Map<Integer,DataBatch> dataBatchIntegerMap;
-    private Cluster cluster;
+    private int currtick;
     public GPUService(String name) {
         super("Change_This_Name");
         // TODO Implement this
