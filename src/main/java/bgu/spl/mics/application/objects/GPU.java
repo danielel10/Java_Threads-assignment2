@@ -12,7 +12,7 @@ public class GPU {
      * Enum representing the type of the GPU.
      */
     enum Type {RTX3090, RTX2080, GTX1080}
-    private Queue<DataBatch> DataBatchesRecivedFromCPU;
+    public Queue<DataBatch> DataBatchesRecivedFromCPU;
     private Type type; // for constructor
     private Model model;
     private Cluster cluster; //the computer
@@ -35,8 +35,6 @@ public class GPU {
                 VramCapacity = 8;
                 tick = 4;
         }
-        tick = 0;
-
     }
 
     /**
@@ -47,12 +45,6 @@ public class GPU {
      * @return true after sent
      */
     public boolean sendTocluster(DataBatch dataBatch){
-       while (VramCapacity == 0)
-           try {
-               //notifyall will be in train
-               wait();
-           }
-       catch (Exception e) {}
         cluster.SendBatchCpu(dataBatch);
         VramCapacity =- VramCapacity;
        return true;
@@ -71,15 +63,12 @@ public class GPU {
             case RTX3090:
                 currenData.addProcessed(1000);
                 VramCapacity =+ 1;
-                notifyAll();
             case RTX2080:
                 currenData.addProcessed(1000);
                 VramCapacity =+ 1;
-                notifyAll();
             case GTX1080:
                 currenData.addProcessed(1000);
                 VramCapacity =+ 1;
-                notifyAll();
         }
             //trains the proccessed data, if the vram capacity is 0 we need to notify all to wake the service up
             // if the total data is equal to proccessed data we notify all to wake the proccess to finish the event
@@ -131,6 +120,10 @@ public class GPU {
 
     public void reciveFromCPU(DataBatch dataBatch) {
         DataBatchesRecivedFromCPU.add(dataBatch);
+    }
+
+    public Data getCurrenData() {
+        return currenData;
     }
 
 }

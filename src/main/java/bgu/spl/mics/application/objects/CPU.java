@@ -2,6 +2,7 @@ package bgu.spl.mics.application.objects;
 
 import java.util.Collection;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Passive object representing a single CPU.
@@ -11,7 +12,7 @@ import java.util.Queue;
 public class CPU {
 
     private int NumberOfCores;
-    private Queue<DataBatch> dataBatches;
+    private ConcurrentLinkedQueue<DataBatch> dataBatches;
     private Cluster cluster;
     private int total_time_worked;
 

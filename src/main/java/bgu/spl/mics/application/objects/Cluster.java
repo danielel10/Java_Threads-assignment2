@@ -49,10 +49,10 @@ public class Cluster {
 			}
 		}
 		CPUvector.get(minindex).sendBatchToCPU(dataBatch);
-		while (!dataBatch.isCPUDone()) {
-
-		}
-		GPUvector.get(GPUvector.indexOf(dataBatch.getWho_sent()));
+//		while (!dataBatch.isCPUDone()) {
+//
+//		}
+//		GPUvector.get(GPUvector.indexOf(dataBatch.getWho_sent()));
 
 	}
 	public void SendBatchtoGPU(DataBatch dataBatch) {

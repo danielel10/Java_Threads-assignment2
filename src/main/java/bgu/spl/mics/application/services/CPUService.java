@@ -1,26 +1,42 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TestModelEvent;
+import bgu.spl.mics.application.objects.CPU;
 import bgu.spl.mics.application.objects.Cluster;
+import bgu.spl.mics.application.messages.TickBroadcast;
 
 /**
- * CPU service is responsible for handling the {@link DataPreProcessEvent}.
  * This class may not hold references for objects which it is not responsible for.
  *
  * You can add private fields and public methods to this class.
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class CPUService extends MicroService {
-    public CPUService(String name) {
-        super("Change_This_Name");
-        // TODO Implement this
+    private CPU cpu;
+    private int tick;
+    private Callback<TickBroadcast> TickBroadcastCallback;
+
+    public CPUService(String name, CPU cpu) {
+        super(name + " Service" );
+        this.cpu = cpu;
+        tick = 0;
+        TickBroadcastCallback = Tickbroadcast -> {
+            /**
+             * check cpu q
+             * process data when q is not empty
+             * cpu.SendToGPU(databatch)
+             */
+        };
     }
 
     @Override
     protected void initialize() {
-        // TODO Implement this
+        subscribeBroadcast(TickBroadcast.class, TickBroadcastCallback);
 
     }
+
 
     /**
      *  CPU.process

@@ -36,4 +36,8 @@ public class DataBatch {
     public GPU getWho_sent() {
         return who_sent;
     }
+
+    public Data.Type getType() {
+        return data.getType();
+    }
 }

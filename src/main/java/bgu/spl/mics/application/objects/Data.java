@@ -40,4 +40,13 @@ public class Data {
     public void addProcessed(int processed) {
         this.processed =+ processed;
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
 }

@@ -1,4 +1,4 @@
-package bgu.spTrainModelEventl.mics.application.messages;
+package bgu.spl.mics.application.messages;
 
 import bgu.spl.mics.Broadcast;
 
