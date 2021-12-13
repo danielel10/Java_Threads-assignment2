@@ -21,6 +21,7 @@ public class CPU {
         NumberOfCores = cores;
         this.name = name;
         tick_time = 32 / NumberOfCores;
+        dataBatches = new ConcurrentLinkedQueue<>();
     }
 
     /**

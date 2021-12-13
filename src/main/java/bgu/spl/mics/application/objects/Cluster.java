@@ -14,20 +14,19 @@ import bgu.spl.mics.application.services.GPUService;
 public class Cluster {
 
 	private LinkedList<GPU> GPUvector;
-	private Map<GPU,GPUService> gpuServiceMap;
 	private Vector<CPU> CPUvector;
-	private Statistics statistics;
 
 	/**
      * Retrieves the single instance of this class.
      */
 	private static Cluster instance = null;
 
-	private Cluster(Vector<GPU> v1, Vector<CPU> v2) {
-		//TODO - add constractor
+	private Cluster(LinkedList<GPU> v1, Vector<CPU> v2) {
+		GPUvector = v1;
+		CPUvector = v2;
 	}
 
-	public static synchronized Cluster getInstance(Vector<GPU> v1, Vector<CPU> v2) {
+	public static synchronized Cluster getInstance(LinkedList<GPU> v1, Vector<CPU> v2) {
 		if(instance == null)
 			instance = new Cluster(v1, v2);
 		return instance;

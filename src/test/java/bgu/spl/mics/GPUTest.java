@@ -4,6 +4,7 @@ import bgu.spl.mics.application.objects.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 import static org.junit.Assert.*;
@@ -19,13 +20,13 @@ public class GPUTest {
     private static Cluster cluster;
     private static Model model;
     private static Student student;
-    private static Vector<GPU> v1;
+    private static LinkedList<GPU> v1;
     private static Vector<CPU> v2;
 
     @Before
     public void setup() {
 
-        gpu = new GPU(GPUs);
+        gpu = new GPU(GPUs, "test");
         v1.add(gpu);
         cpu = new CPU(4,"name");
         v2.add(cpu);

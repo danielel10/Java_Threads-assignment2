@@ -162,16 +162,15 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-        System.out.println("test");
         messageBus.register(this);
         initialize();
         while (!terminated ) {
             try {
                Message message =  messageBus.awaitMessage(this);
-               if(message.getClass().getName() == "Event")
-                    EventCallbacks.get(message.getClass());
+               if(message instanceof Event)
+                    EventCallbacks.get(message.getClass()).call(message);
                else
-                   BroadcastCallbacks.get(message.getClass());
+                   BroadcastCallbacks.get(message.getClass()).call(message);
             }
             catch (Exception e) {}
 

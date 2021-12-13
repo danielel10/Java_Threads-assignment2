@@ -1,17 +1,11 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.Callback;
-import bgu.spl.mics.Event;
-import bgu.spl.mics.Message;
-import bgu.spl.mics.MicroService;
+import bgu.spl.mics.*;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.messages.TrainModelEvent;
-import bgu.spl.mics.application.objects.Data;
-import bgu.spl.mics.application.objects.DataBatch;
-import bgu.spl.mics.application.objects.GPU;
-import bgu.spl.mics.application.objects.Statistics;
+import bgu.spl.mics.application.objects.*;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -61,12 +55,14 @@ public class GPUService extends MicroService {
             if(!gpu.DataBatchesRecivedFromCPU.isEmpty()) {
                 totaltick =+ 1;
                 if (currtick == gpu.getTick()) {
+                    System.out.println("GPU enterd");
                     gpu.train(gpu.DataBatchesRecivedFromCPU.remove());
                     currtick = 0;
                     if(!BatchesWaitingToBeingSentToCluster.isEmpty()) {
                         gpu.sendTocluster(BatchesWaitingToBeingSentToCluster.remove());
                     }
                     if(gpu.getCurrenData().getSize() == gpu.getCurrenData().HowManyProcessed()) {
+                        System.out.println("GPU complete");
                         complete(trainModelEvents.remove(), gpu.getCurrenData());
                         gpu.SetData(null,null);
                         if(!trainModelEvents.isEmpty())
@@ -99,6 +95,7 @@ public class GPUService extends MicroService {
         subscribeEvent(TestModelEvent.class, TestModelEventCallback);
         subscribeBroadcast(TickBroadcast.class, TickBroadcastCallback);
         subscribeBroadcast(TerminateBroadcast.class, terminateBroadcastCallback);
+
 
     }
 

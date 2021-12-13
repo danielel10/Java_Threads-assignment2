@@ -32,7 +32,7 @@ public class Future<T> {
      * @return return the result of type T if it is available, if not wait until it is available.
      *
      */
-	public T get() {
+	public synchronized T get() {
 		while (!isDone()) {
 			try {
 				wait();
@@ -47,7 +47,7 @@ public class Future<T> {
 	 * @pre: result is null
 	 * @post: result isn't null
      */
-	public void resolve (T result) {
+	public synchronized void resolve (T result) {
 		this.result = result;
 		notifyAll();
 
@@ -76,57 +76,54 @@ public class Future<T> {
 	 * 		  else we are blocked for a specific timeout, and we get null
      */
 	public T get(long timeout, TimeUnit unit) {
-		if (result != null) {
-			return result;
-		}
-		else {
+		if (result == null) {
 			switch (unit) {
 				case DAYS:
 					try {
 						wait(TimeUnit.DAYS.toMillis(timeout));
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 				case HOURS:
 					try {
 						wait(TimeUnit.HOURS.toMillis(timeout));
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 				case MINUTES:
 					try {
 						wait(TimeUnit.MINUTES.toMillis(timeout));
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 				case SECONDS:
 					try {
 						wait(TimeUnit.SECONDS.toMillis(timeout));
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 				case MILLISECONDS:
 					try {
 						wait(timeout);
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 				case NANOSECONDS:
 					try {
 						wait(TimeUnit.NANOSECONDS.toMillis(timeout));
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 				case MICROSECONDS:
 					try {
 						wait(TimeUnit.MICROSECONDS.toMillis(timeout));
 						return result;
+					} catch (Exception e) {
 					}
-					catch (Exception e) {}
 
 			}
-			return result;
 		}
+		return result;
 
 	}
 

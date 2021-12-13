@@ -80,8 +80,8 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		if (BroadcastMap.get(b) != null) {
-			for (MicroService m: BroadcastMap.get(b)) {
+		if (BroadcastMap.get(b.getClass()) != null) {
+			for (MicroService m: BroadcastMap.get(b.getClass())) {
 				if(MicroserivesQ.get(m) != null) {
 					MicroserivesQ.get(m).add(b);
 				}
@@ -93,14 +93,13 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		Future<T> tosend = new Future<T>();
-		if (EventsMap.get(e) != null) {
+		if (EventsMap.get(e.getClass()) != null) {
 			futureEventMap.put(e,tosend);
 			synchronized (lock) {
-				LinkedList<MicroService> list = EventsMap.get(e);
+				LinkedList<MicroService> list = EventsMap.get(e.getClass());
 				MicroserivesQ.get(list.getFirst()).add(e);
 				list.addLast(list.getFirst());
 				list.removeFirst();
-				notifyAll();
 				return tosend;
 			}
 		}

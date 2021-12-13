@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +22,7 @@ public class CPUTest {
     private static Cluster cluster;
     private static Model model;
     private static Student student;
-    private static Vector<GPU> v1;
+    private static LinkedList<GPU> v1;
     private static Vector<CPU> v2;
 
     @Before

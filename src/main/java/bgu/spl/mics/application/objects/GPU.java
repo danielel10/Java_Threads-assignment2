@@ -28,16 +28,20 @@ public class GPU {
                 this.type = Type.RTX3090;
                 VramCapacity = 32;
                 tick = 1;
+                break;
             case "RTX2080":
                 this.type = Type.RTX2080;
                 VramCapacity = 16;
                 tick = 2;
+                break;
             case "GTX1080":
                 this.type = Type.GTX1080;
                 VramCapacity = 8;
                 tick = 4;
+                break;
         }
         this.name = name;
+        DataBatchesRecivedFromCPU = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -49,6 +53,7 @@ public class GPU {
      */
     public boolean sendTocluster(DataBatch dataBatch){
         cluster.SendBatchCpu(dataBatch);
+        dataBatch.setGPU(this);
         VramCapacity =- VramCapacity;
        return true;
     }
@@ -92,7 +97,7 @@ public class GPU {
 
     /**
      *
-     * @param degree testing model
+     * @param
      * @pre: none result for the test model
      * @post: getting result to the test model
      *        by probability depend on the student degree

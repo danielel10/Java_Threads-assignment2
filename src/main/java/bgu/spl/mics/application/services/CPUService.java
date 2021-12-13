@@ -3,11 +3,9 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
-import bgu.spl.mics.application.objects.CPU;
+import bgu.spl.mics.application.messages.TrainModelEvent;
+import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.objects.Data;
-import bgu.spl.mics.application.objects.DataBatch;
-import bgu.spl.mics.application.objects.Statistics;
 
 /**
  * This class may not hold references for objects which it is not responsible for.
@@ -40,6 +38,7 @@ public class CPUService extends MicroService {
         total_batches_processed = 0;
 
         TickBroadcastCallback = Tickbroadcast -> {
+            System.out.println("CPU processing");
             DataBatch batch = cpu.getBatch();
             if(batch != null) {
                 total_tick =+ 1;
