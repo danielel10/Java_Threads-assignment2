@@ -45,6 +45,11 @@ public class Data {
         return type;
     }
 
+    public String getTypeToString() {
+        return type.toString();
+    }
+
+
     public int getSize() {
         return size;
     }

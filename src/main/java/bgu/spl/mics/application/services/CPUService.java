@@ -2,10 +2,12 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.TestModelEvent;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.objects.CPU;
-import bgu.spl.mics.application.objects.Cluster;
 import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.objects.Data;
+import bgu.spl.mics.application.objects.DataBatch;
+import bgu.spl.mics.application.objects.Statistics;
 
 /**
  * This class may not hold references for objects which it is not responsible for.
@@ -14,20 +16,75 @@ import bgu.spl.mics.application.messages.TickBroadcast;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class CPUService extends MicroService {
+
     private CPU cpu;
-    private int tick;
+    private int curr_tick_image;
+    private int curr_tick_text;
+    private int curr_tick_tabular;
+    private int total_batches_processed;
+    private int total_tick;
+    private Statistics statistics;
+    private Callback<TerminateBroadcast> terminateBroadcastCallback;
     private Callback<TickBroadcast> TickBroadcastCallback;
 
-    public CPUService(String name, CPU cpu) {
+
+
+    public CPUService(String name, CPU cpu, Statistics statistics) {
         super(name + " Service" );
         this.cpu = cpu;
-        tick = 0;
+        this.statistics = statistics;
+        curr_tick_image = 0;
+        curr_tick_tabular = 0;
+        curr_tick_text = 0;
+        total_tick = 0;
+        total_batches_processed = 0;
+
         TickBroadcastCallback = Tickbroadcast -> {
+            DataBatch batch = cpu.getBatch();
+            if(batch != null) {
+                total_tick =+ 1;
+                switch (batch.getTypeToSring()) {
+                    case ("Images") :
+                        if (curr_tick_image == cpu.getTotal_time_worked() * 4) {
+                            cpu.SendToGPU(cpu.processData());
+                            total_batches_processed++;
+                            curr_tick_image = 0;
+                        }
+                        else {
+                            curr_tick_image ++;
+                        }
+                        break;
+                    case ("Text") :
+                        if (curr_tick_text == cpu.getTotal_time_worked() * 2) {
+                            cpu.SendToGPU(cpu.processData());
+                            total_batches_processed++;
+                            curr_tick_text = 0;
+                        }
+                        else {
+                            curr_tick_text ++;
+                        }
+                        break;
+                    case ("Tabular") :
+                        if (curr_tick_tabular == cpu.getTotal_time_worked()) {
+                            cpu.SendToGPU(cpu.processData());
+                            total_batches_processed++;
+                            curr_tick_tabular = 0;
+                        }
+                        else {
+                            curr_tick_tabular ++;
+                        }
+                        break;
+                }
+            }
             /**
              * check cpu q
              * process data when q is not empty
              * cpu.SendToGPU(databatch)
              */
+        };
+        terminateBroadcastCallback = c -> {
+            statistics.addTotalcputicks(total_tick);
+            statistics.addTotalDataBatchProcessedByCPU(total_batches_processed);
         };
     }
 

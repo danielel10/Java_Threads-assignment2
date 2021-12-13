@@ -4,12 +4,14 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.Event;
 import bgu.spl.mics.Message;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TestModelEvent;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.objects.Data;
 import bgu.spl.mics.application.objects.DataBatch;
 import bgu.spl.mics.application.objects.GPU;
+import bgu.spl.mics.application.objects.Statistics;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -25,18 +27,22 @@ import java.util.Queue;
 public class GPUService extends MicroService {
     private GPU gpu;
     private int currtick; //+1 +1 +1 +1 =4 0
-    //total tick
+    private int totaltick;
     private Queue<DataBatch> BatchesWaitingToBeingSentToCluster;
     private Queue<TrainModelEvent> trainModelEvents;
     private Callback<TestModelEvent> TestModelEventCallback;
     private Callback<TrainModelEvent> TrainModelEventCallback;
     private Callback<TickBroadcast> TickBroadcastCallback;
+    private Callback<TerminateBroadcast> terminateBroadcastCallback;
+    private Statistics statistics;
 
 
-    public GPUService(String name,GPU gpu) {
+    public GPUService(String name,GPU gpu, Statistics statistics) {
         super(name + " Service");
+        this.statistics = statistics;
         this.gpu = gpu;
         currtick = 0;
+        totaltick = 0;
         BatchesWaitingToBeingSentToCluster = new LinkedList<>();
         trainModelEvents = new LinkedList<>();
         TestModelEventCallback = message -> complete(message,gpu.TestData());
@@ -52,21 +58,26 @@ public class GPUService extends MicroService {
 
         };
         TickBroadcastCallback = Tickbroadcast -> {
-            currtick =+ 1;
-            if (currtick == gpu.getTick()) {
-                if(!gpu.DataBatchesRecivedFromCPU.isEmpty()) {
+            if(!gpu.DataBatchesRecivedFromCPU.isEmpty()) {
+                totaltick =+ 1;
+                if (currtick == gpu.getTick()) {
                     gpu.train(gpu.DataBatchesRecivedFromCPU.remove());
+                    currtick = 0;
                     if(!BatchesWaitingToBeingSentToCluster.isEmpty()) {
                         gpu.sendTocluster(BatchesWaitingToBeingSentToCluster.remove());
                     }
                     if(gpu.getCurrenData().getSize() == gpu.getCurrenData().HowManyProcessed()) {
                         complete(trainModelEvents.remove(), gpu.getCurrenData());
                         gpu.SetData(null,null);
+                        if(!trainModelEvents.isEmpty())
+                            trainModelEventComputing(trainModelEvents.peek());
                     }
-                }
 
+                }
+                else {
+                    currtick ++;
+                }
             }
-            trainModelEventComputing(trainModelEvents.peek());
 
             /**
              * if x ticks have passed than get check gpu q, if not empty train a batch, when finished check if there are batches avilable to send and
@@ -74,6 +85,10 @@ public class GPUService extends MicroService {
              * process data when q is not empty
              * cpu.SendToGPU(databatch)
              */
+        };
+        terminateBroadcastCallback = ter -> {
+          statistics.addTotalgputicks(totaltick);
+          terminate();
         };
 
     }
@@ -83,7 +98,7 @@ public class GPUService extends MicroService {
         subscribeEvent(TrainModelEvent.class, TrainModelEventCallback);
         subscribeEvent(TestModelEvent.class, TestModelEventCallback);
         subscribeBroadcast(TickBroadcast.class, TickBroadcastCallback);
-
+        subscribeBroadcast(TerminateBroadcast.class, terminateBroadcastCallback);
 
     }
 
@@ -96,7 +111,7 @@ public class GPUService extends MicroService {
                 BatchesWaitingToBeingSentToCluster.add(new DataBatch(data,index));
                 index =+ 1000;
             }
-            while (gpu.VramCapacity != 0) {
+            while (gpu.VramCapacity != 0 & !BatchesWaitingToBeingSentToCluster.isEmpty()) {
                 gpu.sendTocluster(BatchesWaitingToBeingSentToCluster.remove());
             }
         }

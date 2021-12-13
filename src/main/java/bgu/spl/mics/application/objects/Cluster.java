@@ -49,33 +49,28 @@ public class Cluster {
 			}
 		}
 		CPUvector.get(minindex).sendBatchToCPU(dataBatch);
-//		while (!dataBatch.isCPUDone()) {
-//
-//		}
-//		GPUvector.get(GPUvector.indexOf(dataBatch.getWho_sent()));
 
 	}
 	public void SendBatchtoGPU(DataBatch dataBatch) {
-		//sending start index to GPU
 		GPU gpu = dataBatch.getWho_sent();
 		gpu.reciveFromCPU(dataBatch);
 
 	}
-	public void addModelToStats(Model m) {
-		statistics.addTrainedModel(m);
-	}
-
-	public void addTotalDataBatchProcessedByCPU() {
-		statistics.addTotalDataBatchProcessedByCPU();
-	}
-
-	public void addTotalcputicks() {
-		statistics.addTotalcputicks();
-	}
-
-	public void addTotalgputicks() {
-		statistics.addTotalgputicks();
-	}
+//	public void addModelToStats(Model m) {
+//		statistics.addTrainedModel(m);
+//	}
+//
+//	public void addTotalDataBatchProcessedByCPU() {
+//		statistics.addTotalDataBatchProcessedByCPU();
+//	}
+//
+//	public void addTotalcputicks() {
+//		statistics.addTotalcputicks();
+//	}
+//
+//	public void addTotalgputicks() {
+//		statistics.addTotalgputicks();
+//	}
 
 
 

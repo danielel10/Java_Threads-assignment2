@@ -27,7 +27,7 @@ public class GPUTest {
 
         gpu = new GPU(GPUs);
         v1.add(gpu);
-        cpu = new CPU(4);
+        cpu = new CPU(4,"name");
         v2.add(cpu);
         cluster = Cluster.getInstance(v1,v2);
         cpu.setCluster(cluster);

@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Passive object representing a single GPU.
@@ -12,15 +13,16 @@ public class GPU {
      * Enum representing the type of the GPU.
      */
     enum Type {RTX3090, RTX2080, GTX1080}
-    public Queue<DataBatch> DataBatchesRecivedFromCPU;
+    public ConcurrentLinkedQueue<DataBatch> DataBatchesRecivedFromCPU;
     private Type type; // for constructor
     private Model model;
     private Cluster cluster; //the computer
     public int VramCapacity; //free capacity to use in VRAM - when 0 we wait that we have free
     private Data currenData; //Total data we are working on, need to recive from event
     private int tick; //for ticks, every time timeservice wants it he can have it
+    private String name;
 
-    public GPU(String type) { //constructor
+    public GPU(String type, String name) { //constructor
         switch (type) {
             case "RTX3090":
                 this.type = Type.RTX3090;
@@ -35,6 +37,7 @@ public class GPU {
                 VramCapacity = 8;
                 tick = 4;
         }
+        this.name = name;
     }
 
     /**

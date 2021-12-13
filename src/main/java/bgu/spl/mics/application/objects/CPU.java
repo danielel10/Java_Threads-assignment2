@@ -14,10 +14,13 @@ public class CPU {
     private int NumberOfCores;
     private ConcurrentLinkedQueue<DataBatch> dataBatches;
     private Cluster cluster;
-    private int total_time_worked;
+    private int tick_time;
+    private String name;
 
-    public CPU(int cores) {
+    public CPU(int cores, String name) {
         NumberOfCores = cores;
+        this.name = name;
+        tick_time = 32 / NumberOfCores;
     }
 
     /**
@@ -59,7 +62,7 @@ public class CPU {
      * @return the time that the cpu have worked on
      */
     public int getTotal_time_worked() {
-        return total_time_worked;
+        return tick_time;
     }
 
     /**
@@ -72,6 +75,15 @@ public class CPU {
 
     public void SendToGPU(DataBatch dataBatch) {
         cluster.SendBatchtoGPU(dataBatch);
+    }
+
+    public DataBatch getBatch() {
+        if(!dataBatches.isEmpty()) {
+            return dataBatches.peek();
+        }
+        else {
+            return  null;
+        }
     }
 
 
