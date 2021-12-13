@@ -32,7 +32,7 @@ public class GPUTest {
         v2.add(cpu);
         cluster = Cluster.getInstance(v1,v2);
         cpu.setCluster(cluster);
-        data = new Data(Datas,1000);
+        data = new Data(Datas,1000,null);
         batch = new DataBatch(data,0);
         student = new Student("name","somedepart", "MSc");
         model = new Model(student,data,"Test Model");

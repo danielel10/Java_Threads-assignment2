@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 /**
@@ -17,7 +18,7 @@ public class Student {
     private String name;
     private String department;
     private Degree status;
-    private Vector<Model> myModels;
+    private LinkedList<Model> myModels;
     private int sentModelsToConference;
     private int publications;
     private int papersRead;
@@ -36,12 +37,32 @@ public class Student {
         papersRead = 0;
     }
 
-    public Degree getStatus() {
-        return status;
+    public String getStatus() {
+        return status.toString();
     }
 
     public void addModel(Model m) {
         myModels.add(m);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addPublication() {
+        publications++;
+    }
+
+    public void addReads(int reads) {
+        papersRead =+ reads;
+    }
+
+    public LinkedList<Model> getMyModels() {
+        return myModels;
+    }
+
+    public int getPublications() {
+        return publications;
     }
 
 }

@@ -40,6 +40,7 @@ public class GPUService extends MicroService {
         BatchesWaitingToBeingSentToCluster = new LinkedList<>();
         trainModelEvents = new LinkedList<>();
         TestModelEventCallback = message -> complete(message,gpu.TestData());
+
         TrainModelEventCallback = message -> {
             trainModelEvents.add(message);
             trainModelEventComputing(trainModelEvents.peek());
@@ -63,6 +64,7 @@ public class GPUService extends MicroService {
                     }
                     if(gpu.getCurrenData().getSize() == gpu.getCurrenData().HowManyProcessed()) {
                         System.out.println("GPU complete");
+                        gpu.getCurrenData().setmodel_trained();
                         complete(trainModelEvents.remove(), gpu.getCurrenData());
                         gpu.SetData(null,null);
                         if(!trainModelEvents.isEmpty())
@@ -103,6 +105,7 @@ public class GPUService extends MicroService {
         if(gpu.getCurrenData() == null) {
             gpu.SetData(message.getData(), message.getModel());
             Data data = message.getData();
+            data.setmodel_training();
             int index = 0;
             for (int i = 0; i < data.getSize()/1000; i++) {
                 BatchesWaitingToBeingSentToCluster.add(new DataBatch(data,index));

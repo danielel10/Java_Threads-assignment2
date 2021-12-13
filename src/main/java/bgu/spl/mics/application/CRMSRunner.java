@@ -34,7 +34,7 @@ public class CRMSRunner {
         CPUService cpuService = new CPUService("t",cpu,statistics);
         Thread cput = new Thread(cpuService);
         cput.start();
-        ConferenceService conferenceService = new ConferenceService("cc");
+        ConferenceService conferenceService = new ConferenceService("cc",0);
         Thread conf = new Thread(conferenceService);
         conf.start();
     }

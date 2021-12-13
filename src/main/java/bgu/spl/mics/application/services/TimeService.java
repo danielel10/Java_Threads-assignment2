@@ -1,6 +1,13 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.messages.TickBroadcast;
+
+import java.time.Duration;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * TimeService is the global system timer There is only one instance of this micro-service.
@@ -12,16 +19,38 @@ import bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class TimeService extends MicroService{
+	private long duration;
+	private long mili;
+	private Timer timer;
+	private TimerTask timerTask;
+	private TimerTask terminatetask;
+	private TickBroadcast tickBroadcast;
 
-	public TimeService() {
-		super("Change_This_Name");
-		// TODO Implement this
+	public TimeService(long duration, long howmuchmilisecondforatick) {
+		super("Timeservice");
+		this.duration = duration;
+		mili = howmuchmilisecondforatick;
+		timer = new Timer();
+		timerTask = new TimerTask() {
+			public void run() {
+				sendBroadcast(tickBroadcast);
+			}
+		};
+		terminatetask = new TimerTask() {
+			public void run() {
+				sendBroadcast(new TerminateBroadcast());
+			}
+		};
+
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
-		
+		timer.scheduleAtFixedRate(timerTask, mili,duration - mili);
+		timer.scheduleAtFixedRate(terminatetask,mili,mili);
+
+		terminate();
+
 	}
 
 }

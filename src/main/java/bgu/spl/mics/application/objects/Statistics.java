@@ -1,34 +1,38 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Statistics {
-    private Vector<Model> trainedModel; //from student
     private int totalDataBatchProcessedByCPU; //from all cpus
     private int totalcputicks;
     private int totalgputicks;
+    private AtomicInteger counterproceesedbatches = new AtomicInteger();
+    private AtomicInteger countercputicks = new AtomicInteger();
+    private AtomicInteger countergputicks= new AtomicInteger();
 
     public Statistics () {
-        trainedModel = new Vector<Model>();
         totalcputicks = 0;
         totalgputicks = 0;
         totalDataBatchProcessedByCPU = 0;
     }
 
-    public void addTrainedModel(Model m) {
-        trainedModel.add(m);
-    }
-
     public void addTotalDataBatchProcessedByCPU(int totalDataBatchProcessedByCPU) {
-        this.totalDataBatchProcessedByCPU = totalDataBatchProcessedByCPU;
+        do {
+            this.totalDataBatchProcessedByCPU = counterproceesedbatches.get();
+        }while(!counterproceesedbatches.compareAndSet(this.totalDataBatchProcessedByCPU,this.totalDataBatchProcessedByCPU + totalDataBatchProcessedByCPU));
     }
 
     public void addTotalcputicks(int totalcputicks) {
-        this.totalcputicks =+ totalcputicks;
+        do {
+            this.totalcputicks = countercputicks.get();
+        }while(!countercputicks.compareAndSet(this.totalcputicks,this.totalcputicks + totalcputicks));
     }
 
     public void addTotalgputicks(int totalgputicks) {
-        this.totalgputicks =+ totalgputicks;
+        do {
+            this.totalgputicks = countergputicks.get();
+        }while(!countergputicks.compareAndSet(this.totalgputicks,this.totalgputicks + totalgputicks));
     }
 
 }

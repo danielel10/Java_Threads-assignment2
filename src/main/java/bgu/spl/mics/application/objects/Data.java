@@ -15,8 +15,9 @@ public class Data {
     private Type type;
     private int processed;
     private int size;
+    private Model model;
 
-    public Data(String type,int size) {
+    public Data(String type,int size, Model model1) {
         switch (type) {
             case "Images":
                 this.type = Type.Images;
@@ -27,6 +28,7 @@ public class Data {
         }
         this.size = size;
         processed = 0;
+        model = model1;
     }
 
     public int HowManyProcessed(){
@@ -53,5 +55,19 @@ public class Data {
     public int getSize() {
         return size;
     }
+
+    public void setmodel_training() {
+        model.setmodel_training();
+    }
+
+    public void setmodel_trained() {
+        model.setmodel_Trained();
+    }
+
+    public void setmodel_tested() {
+        model.setmodel_Tested();
+    }
+
+
 
 }

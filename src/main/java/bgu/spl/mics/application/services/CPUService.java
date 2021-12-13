@@ -84,6 +84,7 @@ public class CPUService extends MicroService {
         terminateBroadcastCallback = c -> {
             statistics.addTotalcputicks(total_tick);
             statistics.addTotalDataBatchProcessedByCPU(total_batches_processed);
+            terminate();
         };
     }
 
@@ -91,6 +92,7 @@ public class CPUService extends MicroService {
     protected void initialize() {
         subscribeBroadcast(TickBroadcast.class, TickBroadcastCallback);
         subscribeBroadcast(TerminateBroadcast.class, terminateBroadcastCallback);
+
 
     }
 

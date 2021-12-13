@@ -22,6 +22,26 @@ public class Model {
         student = s;
     }
 
+    public void setmodel_training() {
+        status = Status.Training;
+    }
 
+    public void setmodel_Trained() {
+        status = Status.Trained;
+    }
 
+    public void setmodel_Tested() {
+        status = Status.Tested;
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public void setResult(String s) {
+        if(s == "g")
+            result = Result.Good;
+        else
+            result = Result.Bad;
+    }
 }
