@@ -1,6 +1,10 @@
 package bgu.spl.mics;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
@@ -13,18 +17,20 @@ public class MessageBusImpl implements MessageBus {
 	private Map<Event,Future> futureEventMap;
 	private Map<Class<? extends Event>,LinkedList<MicroService>> EventsMap;
 	private Map<Class<? extends Broadcast>,Vector<MicroService>> BroadcastMap;
-	private Map<MicroService,Queue<Message>> MicroserivesQ;
+	private Map<MicroService, BlockingQueue<Message>> MicroserivesQ;
 	Object lock = new Object();
+	Object locksubevent = new Object();
+	Object locksubbroadcast = new Object();
 
 
 	private static MessageBusImpl instance = null;
 
 	//singelton creation
 	private <T> MessageBusImpl() {
-		futureEventMap = new HashMap<Event,Future>();
-		EventsMap = new HashMap<Class<? extends Event>,LinkedList<MicroService>>();
-		BroadcastMap = new HashMap<Class<? extends Broadcast>,Vector<MicroService>>();
-		MicroserivesQ = new HashMap<MicroService ,Queue<Message>>();
+		futureEventMap = new ConcurrentHashMap<Event, Future>();
+		EventsMap = new ConcurrentHashMap<>();
+		BroadcastMap = new ConcurrentHashMap<>();
+		MicroserivesQ = new ConcurrentHashMap<>();
 	}
 
 	public static synchronized MessageBusImpl getInstance() {
@@ -37,28 +43,31 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		LinkedList<MicroService> vector = EventsMap.get(type);
-		if(vector == null) {
-			LinkedList<MicroService> nvector = new LinkedList<MicroService>();
-			nvector.add(m);
-			EventsMap.put(type,nvector);
+		synchronized (locksubevent) {
+			LinkedList<MicroService> vector = EventsMap.get(type);
+			if(vector == null) {
+				LinkedList<MicroService> nvector = new LinkedList<MicroService>();
+				nvector.add(m);
+				EventsMap.put(type,nvector);
+			}
+			else {
+				vector.add(m);
+			}
 		}
-		else {
-			vector.add(m);
-		}
-
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		Vector<MicroService> vector = BroadcastMap.get(type);
-		if(vector == null) {
-			Vector<MicroService> nvector = new Vector<MicroService>();
-			nvector.add(m);
-			BroadcastMap.put(type,nvector);
-		}
-		else {
-			vector.add(m);
+		synchronized (locksubbroadcast) {
+			Vector<MicroService> vector = BroadcastMap.get(type);
+			if(vector == null) {
+				Vector<MicroService> nvector = new Vector<MicroService>();
+				nvector.add(m);
+				BroadcastMap.put(type,nvector);
+			}
+			else {
+				vector.add(m);
+			}
 		}
 
 	}
@@ -87,10 +96,6 @@ public class MessageBusImpl implements MessageBus {
 		if (EventsMap.get(e) != null) {
 			futureEventMap.put(e,tosend);
 			synchronized (lock) {
-				//here we check is the Q for the given event is empty or not
-				while(MicroserivesQ.get(EventsMap.get(e).getFirst()) == null & !EventsMap.get(e).isEmpty()) {
-					EventsMap.get(e).removeFirst();
-				}
 				LinkedList<MicroService> list = EventsMap.get(e);
 				MicroserivesQ.get(list.getFirst()).add(e);
 				list.addLast(list.getFirst());
@@ -107,7 +112,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		MicroserivesQ.put(m, new LinkedList<Message>());
+		MicroserivesQ.put(m, new LinkedBlockingQueue<>());
 	}
 
 	@Override
@@ -120,10 +125,7 @@ public class MessageBusImpl implements MessageBus {
 		if(MicroserivesQ.get(m) == null) {
 			throw new IllegalStateException();
 		}
-		while (MicroserivesQ.get(m).isEmpty()) {
-			wait();
-		}
-		return MicroserivesQ.get(m).remove();
+		return MicroserivesQ.get(m).take();
 	}
 
 

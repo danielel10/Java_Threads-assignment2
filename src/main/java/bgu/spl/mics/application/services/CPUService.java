@@ -91,6 +91,7 @@ public class CPUService extends MicroService {
     @Override
     protected void initialize() {
         subscribeBroadcast(TickBroadcast.class, TickBroadcastCallback);
+        subscribeBroadcast(TerminateBroadcast.class, terminateBroadcastCallback);
 
     }
 
