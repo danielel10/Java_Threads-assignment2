@@ -56,6 +56,10 @@ public class Data {
         return size;
     }
 
+    public void setModel(Model model){
+        this.model = model;
+    }
+
     public void setmodel_training() {
         model.setmodel_training();
     }

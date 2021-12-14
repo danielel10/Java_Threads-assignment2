@@ -15,6 +15,7 @@ public class Student {
         MSc, PhD
     }
 
+
     private String name;
     private String department;
     private Degree status;
