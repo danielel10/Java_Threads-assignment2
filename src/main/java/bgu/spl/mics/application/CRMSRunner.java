@@ -6,7 +6,6 @@ import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.CPUService;
 import bgu.spl.mics.application.services.ConferenceService;
 import bgu.spl.mics.application.services.GPUService;
-import bgu.spl.mics.example.services.ExampleMessageSenderService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,29 +28,13 @@ import java.util.Vector;
  */
 public class CRMSRunner {
     public static void main(String[] args) {
-//        GPU gpu = new GPU("RTX3090","test");
-//        CPU cpu = new CPU(32,"name");
-//        LinkedList<GPU> gpuLinkedList = new LinkedList<>();
-//        gpuLinkedList.add(gpu);
-//        Vector<CPU> cpuVector = new Vector<>();
-//        cpuVector.add(cpu);
-//        Cluster cluster = Cluster.getInstance(gpuLinkedList,cpuVector);
-//        gpu.setCluster(cluster);
-//        cpu.setCluster(cluster);
-//        System.out.println(cpu.getClass().getName());
-//        Statistics statistics = new Statistics();
-//        GPUService gpuService = new GPUService("test",gpu,statistics);
-//        Thread gput = new Thread(gpuService);
-//        gput.start();
-//        CPUService cpuService = new CPUService("t",cpu,statistics);
-//        Thread cput = new Thread(cpuService);
-//        cput.start();
-//        ConferenceService conferenceService = new ConferenceService("cc",0);
-//        Thread conf = new Thread(conferenceService);
-//        conf.start();
-
+        System.out.println("heeeee");
         File input = new File("/home/daniel/IdeaProjects/assignment2/example_input.json");
-        List<Student> Students = null;
+        List<Student> Students =  new ArrayList<>();
+        List<Model> Models =  new ArrayList<>();
+        LinkedList<GPU> gpus =  new LinkedList<>();
+        Vector<CPU> cpus = new Vector<>();
+        List<ConfrenceInformation> confrenceInformations =  new ArrayList<>();
         try {
             JsonElement fileEle = JsonParser.parseReader(new FileReader(input));
             JsonObject fileObj = fileEle.getAsJsonObject();
@@ -60,10 +43,11 @@ public class CRMSRunner {
             long tick = fileObj.get("TickTime").getAsLong();
             long duration = fileObj.get("Duration").getAsLong();
 
-
             //process all Students
             JsonArray JsonArrayOfStudent = fileObj.get("Students").getAsJsonArray();
-            Students = new ArrayList<>();
+            JsonArray JsonArrayOfGpu = fileObj.get("GPUS").getAsJsonArray();
+            JsonArray JsonArrayOfCpu = fileObj.get("CPUS").getAsJsonArray();
+            JsonArray JsonArrayOfConferance = fileObj.get("Conferences").getAsJsonArray();
             for (JsonElement StudentElement : JsonArrayOfStudent) {
                 //get the Json Object
                 JsonObject StudentJsonObject = StudentElement.getAsJsonObject();
@@ -83,7 +67,27 @@ public class CRMSRunner {
                     Model model = new Model(student, data, ModelName);
                     data.setModel(model);
                     Students.add(student);
+                    Models.add(model);
                 }
+            }
+            for (JsonElement GpuElement : JsonArrayOfGpu) {
+//                JsonObject GpuJsonObject = GpuElement.getAsJsonObject();
+                String type = GpuElement.getAsString();
+                GPU gpu = new GPU(type,null);
+                gpus.add(gpu);
+            }
+            for (JsonElement CpuElement : JsonArrayOfCpu) {
+//                JsonObject CpuJsonObject = CpuElement.getAsJsonObject();
+                int NumOfCpus = CpuElement.getAsInt();
+                CPU cpu = new CPU(NumOfCpus,null);
+                cpus.add(cpu);
+            }
+            for (JsonElement ConferanceElement : JsonArrayOfConferance) {
+                JsonObject ConferanceJsonObject = ConferanceElement.getAsJsonObject();
+                String name = ConferanceJsonObject.get("name").getAsString();
+                int date = ConferanceJsonObject.get("date").getAsInt();
+                ConfrenceInformation confrenceInformation = new ConfrenceInformation(name,date);
+                confrenceInformations.add(confrenceInformation);
             }
 
 
@@ -91,6 +95,30 @@ public class CRMSRunner {
             ex.printStackTrace();
         }
 
+        Cluster cluster = Cluster.getInstance(gpus,cpus);
+        Statistics statistics = new Statistics();
+        int nam = 1;
+        for (GPU gpu : gpus) {
+            gpu.setCluster(cluster);
+            GPUService gpuService = new GPUService("gpu"+ nam,gpu,statistics);
+            nam++;
+            Thread gpuT = new Thread(gpuService);
+//          gpu.start();
+        }
+        nam = 1;
+        for (CPU cpu : cpus) {
+            cpu.setCluster(cluster);
+            CPUService cpuService = new CPUService("cpu"+ nam,cpu,statistics);
+            nam++;
+            Thread cpuT = new Thread(cpuService);
+//          cput.start();
+        }
+        TotalConferenceData total = new TotalConferenceData();
+        for (ConfrenceInformation confrenceInformation: confrenceInformations) {
+            ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
+            Thread conf = new Thread(conferenceService);
+//          conf.start();
+        }
 
     }
     }

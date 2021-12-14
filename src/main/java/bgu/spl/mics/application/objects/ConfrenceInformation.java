@@ -25,5 +25,12 @@ public class ConfrenceInformation {
         return modelVector;
     }
 
+    public int getDate(){
+        return date;
+    }
+    public String getName(){
+        return name;
+    }
+
 
 }
