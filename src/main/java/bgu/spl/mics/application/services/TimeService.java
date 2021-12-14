@@ -25,15 +25,20 @@ public class TimeService extends MicroService{
 	private TimerTask timerTask;
 	private TimerTask terminatetask;
 	private TickBroadcast tickBroadcast;
+	private int time;
 
 	public TimeService(long duration, long howmuchmilisecondforatick) {
 		super("Timeservice");
 		this.duration = duration;
 		mili = howmuchmilisecondforatick;
 		timer = new Timer();
+		tickBroadcast = new TickBroadcast();
+		time = 0;
 		timerTask = new TimerTask() {
 			public void run() {
 				sendBroadcast(tickBroadcast);
+				System.out.println(time);
+				time ++;
 			}
 		};
 		terminatetask = new TimerTask() {

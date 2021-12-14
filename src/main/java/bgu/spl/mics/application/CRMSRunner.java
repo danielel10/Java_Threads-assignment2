@@ -3,9 +3,7 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.Future;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.objects.*;
-import bgu.spl.mics.application.services.CPUService;
-import bgu.spl.mics.application.services.ConferenceService;
-import bgu.spl.mics.application.services.GPUService;
+import bgu.spl.mics.application.services.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,9 +43,6 @@ public class CRMSRunner {
 
             //process all Students
             JsonArray JsonArrayOfStudent = fileObj.get("Students").getAsJsonArray();
-            JsonArray JsonArrayOfGpu = fileObj.get("GPUS").getAsJsonArray();
-            JsonArray JsonArrayOfCpu = fileObj.get("CPUS").getAsJsonArray();
-            JsonArray JsonArrayOfConferance = fileObj.get("Conferences").getAsJsonArray();
             for (JsonElement StudentElement : JsonArrayOfStudent) {
                 //get the Json Object
                 JsonObject StudentJsonObject = StudentElement.getAsJsonObject();
@@ -70,18 +65,27 @@ public class CRMSRunner {
                     Models.add(model);
                 }
             }
+            int nam = 1;
+            //get GPUS
+            JsonArray JsonArrayOfGpu = fileObj.get("GPUS").getAsJsonArray();
             for (JsonElement GpuElement : JsonArrayOfGpu) {
-//                JsonObject GpuJsonObject = GpuElement.getAsJsonObject();
                 String type = GpuElement.getAsString();
-                GPU gpu = new GPU(type,null);
+                GPU gpu = new GPU(type,"gpu"+nam);
                 gpus.add(gpu);
+                nam++;
             }
+            nam = 1;
+            //get CPUS
+            JsonArray JsonArrayOfCpu = fileObj.get("CPUS").getAsJsonArray();
             for (JsonElement CpuElement : JsonArrayOfCpu) {
-//                JsonObject CpuJsonObject = CpuElement.getAsJsonObject();
                 int NumOfCpus = CpuElement.getAsInt();
-                CPU cpu = new CPU(NumOfCpus,null);
+                CPU cpu = new CPU(NumOfCpus,"cpu" + nam);
                 cpus.add(cpu);
+                nam++;
             }
+            nam = 1;
+            //get CONFERENCES
+            JsonArray JsonArrayOfConferance = fileObj.get("Conferences").getAsJsonArray();
             for (JsonElement ConferanceElement : JsonArrayOfConferance) {
                 JsonObject ConferanceJsonObject = ConferanceElement.getAsJsonObject();
                 String name = ConferanceJsonObject.get("name").getAsString();
@@ -89,35 +93,41 @@ public class CRMSRunner {
                 ConfrenceInformation confrenceInformation = new ConfrenceInformation(name,date);
                 confrenceInformations.add(confrenceInformation);
             }
-
+            Cluster cluster = Cluster.getInstance(gpus,cpus);
+            Statistics statistics = new Statistics();
+            nam = 1;
+            for (GPU gpu : gpus) {
+                gpu.setCluster(cluster);
+                GPUService gpuService = new GPUService("gpu"+ nam,gpu,statistics);
+                nam++;
+                Thread gpuT = new Thread(gpuService);
+                gpuT.start();
+            }
+//            nam = 1;
+//            for (CPU cpu : cpus) {
+//                cpu.setCluster(cluster);
+//                CPUService cpuService = new CPUService("cpu"+ nam,cpu,statistics);
+//                nam++;
+//                Thread cpuT = new Thread(cpuService);
+//                cpuT.start();
+//            }
+//            TotalConferenceData total = new TotalConferenceData();
+//            for (ConfrenceInformation confrenceInformation: confrenceInformations) {
+//                ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
+//                Thread conf = new Thread(conferenceService);
+//                conf.start();
+//            }
+//            for (Student student: Students) {
+//                StudentService studentService = new StudentService(student);
+//                Thread studentT = new Thread(studentService);
+//                studentT.start();
+//            }
+            TimeService timeService = new TimeService(duration,tick);
+            Thread timeserviceT = new Thread(timeService);
+            timeserviceT.start();
 
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
-        }
-
-        Cluster cluster = Cluster.getInstance(gpus,cpus);
-        Statistics statistics = new Statistics();
-        int nam = 1;
-        for (GPU gpu : gpus) {
-            gpu.setCluster(cluster);
-            GPUService gpuService = new GPUService("gpu"+ nam,gpu,statistics);
-            nam++;
-            Thread gpuT = new Thread(gpuService);
-//          gpu.start();
-        }
-        nam = 1;
-        for (CPU cpu : cpus) {
-            cpu.setCluster(cluster);
-            CPUService cpuService = new CPUService("cpu"+ nam,cpu,statistics);
-            nam++;
-            Thread cpuT = new Thread(cpuService);
-//          cput.start();
-        }
-        TotalConferenceData total = new TotalConferenceData();
-        for (ConfrenceInformation confrenceInformation: confrenceInformations) {
-            ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
-            Thread conf = new Thread(conferenceService);
-//          conf.start();
         }
 
     }
