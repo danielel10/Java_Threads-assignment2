@@ -6,17 +6,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TotalConferenceData {
-    private Map<ConferenceService,ConcurrentLinkedQueue<Model>> map_of_conferences;
+    private ConcurrentLinkedQueue<ConfrenceInformation> confrenceInformationConcurrentLinkedQueue;
 
     public TotalConferenceData() {
-        map_of_conferences = new ConcurrentHashMap<>();
+        confrenceInformationConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();
     }
 
-    public void addConferenceMap(ConferenceService c,ConcurrentLinkedQueue<Model> models) {
-        map_of_conferences.put(c,models);
+    public void addconference(ConfrenceInformation c) {
+        confrenceInformationConcurrentLinkedQueue.add(c);
     }
 
-    public Map<ConferenceService, ConcurrentLinkedQueue<Model>> getMap_of_conferences() {
-        return map_of_conferences;
+    public ConfrenceInformation getConfe() {
+        return confrenceInformationConcurrentLinkedQueue.remove();
     }
 }

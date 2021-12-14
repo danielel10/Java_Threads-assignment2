@@ -43,6 +43,7 @@ public class Cluster {
 	public void SendBatchCpu (DataBatch dataBatch) {
 		int minindex = 0;
 		for (int i = 1; i < CPUvector.size(); i++) {
+			//maybe sync this
 			if(CPUvector.get(i).getQsize() < CPUvector.get(i - 1).getQsize()) {
 				minindex = i;
 			}

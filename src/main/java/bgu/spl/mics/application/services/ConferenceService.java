@@ -4,10 +4,7 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
-import bgu.spl.mics.application.objects.Data;
-import bgu.spl.mics.application.objects.Model;
-import bgu.spl.mics.application.objects.Student;
-import bgu.spl.mics.application.objects.TotalConferenceData;
+import bgu.spl.mics.application.objects.*;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -26,28 +23,28 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ConferenceService extends MicroService {
     private int ticks_to_terminate;
     private TotalConferenceData totalConferenceData;
+    private ConfrenceInformation confrenceInformation;
     private int curr_tick;
-    private ConcurrentLinkedQueue<Model> models_to_publish;
     private Callback<PublishResultsEvent> publishResultsEventCallback;
     private Callback<TickBroadcast> tickBroadcastCallback;
-    private PublishConferenceBroadcast publishConferenceBroadcast;
     private Callback<TerminateBroadcast> terminateBroadcastCallback;
 
 
 
-    public ConferenceService(String name,int ticks_to_terminate) {
+    public ConferenceService(String name,int ticks_to_terminate, ConfrenceInformation confrenceInformation, TotalConferenceData total) {
         super(name);
         this.ticks_to_terminate = ticks_to_terminate;
-        models_to_publish = new ConcurrentLinkedQueue<>();
+        this.confrenceInformation = confrenceInformation;
+        totalConferenceData = total;
+
         publishResultsEventCallback = message -> {
-            models_to_publish.add(message.model);
+            confrenceInformation.addModel(message.model);
         };
         tickBroadcastCallback = messege -> {
             curr_tick ++;
             if (curr_tick == ticks_to_terminate) {
-                totalConferenceData.addConferenceMap(this,models_to_publish);
-                publishConferenceBroadcast.totalmodels = models_to_publish.size();
-                sendBroadcast(publishConferenceBroadcast);
+                totalConferenceData.addconference(confrenceInformation);
+                sendBroadcast(new PublishConferenceBroadcast(confrenceInformation.getModelVector().size()));
                 terminate();
             }
         };

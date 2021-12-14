@@ -42,6 +42,7 @@ public class StudentService extends MicroService {
                 Future<Data> future = sendEvent(new TrainModelEvent(students_data,model));
                 future.get();
                 Future<Integer> testresult = sendEvent(new TestModelEvent());
+                testresult.get();
                 if(student.getStatus() == "Msc" ) {
                     Integer num = 6;
                     if (testresult.get() <= num) {
