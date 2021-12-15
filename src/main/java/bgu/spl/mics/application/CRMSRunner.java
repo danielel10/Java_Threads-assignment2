@@ -15,10 +15,7 @@ import bgu.spl.mics.application.objects.Student;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /** This is the Main class of Compute Resources Management System application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -26,7 +23,6 @@ import java.util.Vector;
  */
 public class CRMSRunner {
     public static void main(String[] args) {
-        System.out.println("heeeee");
         File input = new File("/home/daniel/IdeaProjects/assignment2/example_input.json");
         List<Student> Students =  new ArrayList<>();
         List<Model> Models =  new ArrayList<>();
@@ -63,7 +59,9 @@ public class CRMSRunner {
                     data.setModel(model);
                     Students.add(student);
                     Models.add(model);
+                    student.addModel(model);
                 }
+
             }
             int nam = 1;
             //get GPUS
@@ -103,33 +101,51 @@ public class CRMSRunner {
                 Thread gpuT = new Thread(gpuService);
                 gpuT.start();
             }
-//            nam = 1;
-//            for (CPU cpu : cpus) {
-//                cpu.setCluster(cluster);
-//                CPUService cpuService = new CPUService("cpu"+ nam,cpu,statistics);
-//                nam++;
-//                Thread cpuT = new Thread(cpuService);
-//                cpuT.start();
-//            }
-//            TotalConferenceData total = new TotalConferenceData();
-//            for (ConfrenceInformation confrenceInformation: confrenceInformations) {
-//                ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
-//                Thread conf = new Thread(conferenceService);
-//                conf.start();
-//            }
-//            for (Student student: Students) {
-//                StudentService studentService = new StudentService(student);
-//                Thread studentT = new Thread(studentService);
-//                studentT.start();
-//            }
+            nam = 1;
+            for (CPU cpu : cpus) {
+                cpu.setCluster(cluster);
+                CPUService cpuService = new CPUService("cpu"+ nam,cpu,statistics);
+                nam++;
+                Thread cpuT = new Thread(cpuService);
+                cpuT.start();
+            }
+            TotalConferenceData total = new TotalConferenceData();
+            for (ConfrenceInformation confrenceInformation: confrenceInformations) {
+                ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
+                Thread conf = new Thread(conferenceService);
+                conf.start();
+            }
+            for (Student student: Students) {
+                StudentService studentService = new StudentService(student);
+                Thread studentT = new Thread(studentService);
+                studentT.start();
+            }
             TimeService timeService = new TimeService(duration,tick);
             Thread timeserviceT = new Thread(timeService);
             timeserviceT.start();
 
+            timeserviceT.join();
+
+            System.out.println(statistics.getTotalcputicks());
+            System.out.println(statistics.getTotalgputicks());
+            System.out.println(statistics.getTotalDataBatchProcessedByCPU());
+
+
+
+
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
+
+//        TimeService timeService = new TimeService(0,0);
+
+//
     }
     }
 

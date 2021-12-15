@@ -54,7 +54,7 @@ public class GPU {
     public boolean sendTocluster(DataBatch dataBatch){
         cluster.SendBatchCpu(dataBatch);
         dataBatch.setGPU(this);
-        VramCapacity =- VramCapacity;
+        VramCapacity --;
        return true;
     }
 
@@ -67,17 +67,11 @@ public class GPU {
      *        total_time_worked = (currenttimed worked on) + @pre(total_time_worked)
      */
     public void train(DataBatch dataBatch){
-        switch (type) {
-            case RTX3090:
+
                 currenData.addProcessed(1000);
-                VramCapacity =+ 1;
-            case RTX2080:
-                currenData.addProcessed(1000);
-                VramCapacity =+ 1;
-            case GTX1080:
-                currenData.addProcessed(1000);
-                VramCapacity =+ 1;
-        }
+                VramCapacity ++ ;
+
+
             //trains the proccessed data, if the vram capacity is 0 we need to notify all to wake the service up
             // if the total data is equal to proccessed data we notify all to wake the proccess to finish the event
             //for each procces we update total time spent

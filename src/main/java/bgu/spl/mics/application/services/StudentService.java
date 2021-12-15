@@ -33,7 +33,7 @@ public class StudentService extends MicroService {
         this.student = student;
         models = student.getMyModels();
         terminateBroadcastCallback = message -> {
-
+            terminate();
         };
         tickBroadcastCallback = message -> {
             if (!models.isEmpty()) {
@@ -43,6 +43,7 @@ public class StudentService extends MicroService {
                 future.get();
                 Future<Integer> testresult = sendEvent(new TestModelEvent());
                 testresult.get();
+                System.out.println("Student finished event");
                 if(student.getStatus() == "Msc" ) {
                     Integer num = 6;
                     if (testresult.get() <= num) {
@@ -82,9 +83,9 @@ public class StudentService extends MicroService {
 
     @Override
     protected void initialize() {
+        subscribeBroadcast(TerminateBroadcast.class,terminateBroadcastCallback);
         subscribeBroadcast(PublishConferenceBroadcast.class,publishConferenceBroadcastCallback);
         subscribeBroadcast(TickBroadcast.class,tickBroadcastCallback);
-        subscribeBroadcast(TerminateBroadcast.class,terminateBroadcastCallback);
 
     }
 }

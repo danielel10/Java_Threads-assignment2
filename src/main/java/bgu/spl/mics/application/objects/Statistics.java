@@ -27,12 +27,26 @@ public class Statistics {
         do {
             this.totalcputicks = countercputicks.get();
         }while(!countercputicks.compareAndSet(this.totalcputicks,this.totalcputicks + totalcputicks));
+        System.out.println("CPU ticks " + countercputicks.get());
     }
 
     public void addTotalgputicks(int totalgputicks) {
         do {
             this.totalgputicks = countergputicks.get();
+
         }while(!countergputicks.compareAndSet(this.totalgputicks,this.totalgputicks + totalgputicks));
+        System.out.println("GPU ticks " + countergputicks.get() + this);
     }
 
+    public int getTotalcputicks() {
+        return totalcputicks;
+    }
+
+    public int getTotalDataBatchProcessedByCPU() {
+        return totalDataBatchProcessedByCPU;
+    }
+
+    public int getTotalgputicks() {
+        return totalgputicks;
+    }
 }

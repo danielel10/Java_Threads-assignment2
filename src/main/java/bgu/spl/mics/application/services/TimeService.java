@@ -36,14 +36,16 @@ public class TimeService extends MicroService{
 		time = 0;
 		timerTask = new TimerTask() {
 			public void run() {
-				sendBroadcast(tickBroadcast);
 				System.out.println(time);
+				sendBroadcast(tickBroadcast);
 				time ++;
 			}
 		};
 		terminatetask = new TimerTask() {
 			public void run() {
 				sendBroadcast(new TerminateBroadcast());
+				System.out.println("terminnating");
+				timer.cancel();
 			}
 		};
 
@@ -51,9 +53,8 @@ public class TimeService extends MicroService{
 
 	@Override
 	protected void initialize() {
-		timer.scheduleAtFixedRate(timerTask, mili,duration - mili);
-		timer.scheduleAtFixedRate(terminatetask,mili,mili);
-
+		timer.scheduleAtFixedRate(timerTask,0,mili);
+		timer.schedule(terminatetask,duration);
 		terminate();
 
 	}

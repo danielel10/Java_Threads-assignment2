@@ -18,15 +18,18 @@ public class MessageBusImpl implements MessageBus {
 	private Map<Class<? extends Event>,LinkedList<MicroService>> EventsMap;
 	private Map<Class<? extends Broadcast>,Vector<MicroService>> BroadcastMap;
 	private Map<MicroService, BlockingQueue<Message>> MicroserivesQ;
-	Object lock = new Object();
-	Object locksubevent = new Object();
-	Object locksubbroadcast = new Object();
+	private Object lock;
+	private Object locksubevent;
+	private Object locksubbroadcast;
 
 
 	private static MessageBusImpl instance = null;
 
 	//singelton creation
 	private <T> MessageBusImpl() {
+		lock = new Object();
+		locksubevent = new Object();
+		locksubbroadcast = new Object();
 		futureEventMap = new ConcurrentHashMap<Event, Future>();
 		EventsMap = new ConcurrentHashMap<>();
 		BroadcastMap = new ConcurrentHashMap<>();
@@ -97,6 +100,7 @@ public class MessageBusImpl implements MessageBus {
 			futureEventMap.put(e,tosend);
 			synchronized (lock) {
 				LinkedList<MicroService> list = EventsMap.get(e.getClass());
+				MicroService m = list.getFirst();
 				MicroserivesQ.get(list.getFirst()).add(e);
 				list.addLast(list.getFirst());
 				list.removeFirst();

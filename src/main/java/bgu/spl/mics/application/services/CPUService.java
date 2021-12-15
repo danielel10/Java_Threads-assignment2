@@ -31,23 +31,23 @@ public class CPUService extends MicroService {
         super(name + " Service" );
         this.cpu = cpu;
         this.statistics = statistics;
-        curr_tick_image = 0;
-        curr_tick_tabular = 0;
-        curr_tick_text = 0;
+        curr_tick_image = 1;
+        curr_tick_tabular = 1;
+        curr_tick_text = 1;
         total_tick = 0;
         total_batches_processed = 0;
 
         TickBroadcastCallback = Tickbroadcast -> {
-            System.out.println("CPU processing");
             DataBatch batch = cpu.getBatch();
             if(batch != null) {
-                total_tick =+ 1;
+                System.out.println("CPU processing");
+                total_tick ++;
                 switch (batch.getTypeToSring()) {
                     case ("Images") :
                         if (curr_tick_image == cpu.getTotal_time_worked() * 4) {
                             cpu.SendToGPU(cpu.processData());
                             total_batches_processed++;
-                            curr_tick_image = 0;
+                            curr_tick_image = 1;
                         }
                         else {
                             curr_tick_image ++;
@@ -57,7 +57,7 @@ public class CPUService extends MicroService {
                         if (curr_tick_text == cpu.getTotal_time_worked() * 2) {
                             cpu.SendToGPU(cpu.processData());
                             total_batches_processed++;
-                            curr_tick_text = 0;
+                            curr_tick_text = 1;
                         }
                         else {
                             curr_tick_text ++;
@@ -67,7 +67,7 @@ public class CPUService extends MicroService {
                         if (curr_tick_tabular == cpu.getTotal_time_worked()) {
                             cpu.SendToGPU(cpu.processData());
                             total_batches_processed++;
-                            curr_tick_tabular = 0;
+                            curr_tick_tabular = 1;
                         }
                         else {
                             curr_tick_tabular ++;

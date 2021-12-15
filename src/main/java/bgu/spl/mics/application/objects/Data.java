@@ -21,10 +21,13 @@ public class Data {
         switch (type) {
             case "Images":
                 this.type = Type.Images;
+                break;
             case "Text":
                 this.type = Type.Text;
+                break;
             case "Tabular":
                 this.type = Type.Tabular;
+                break;
         }
         this.size = size;
         processed = 0;
@@ -40,7 +43,7 @@ public class Data {
     }
 
     public void addProcessed(int processed) {
-        this.processed =+ processed;
+        this.processed = this.processed + processed;
     }
 
     public Type getType() {
