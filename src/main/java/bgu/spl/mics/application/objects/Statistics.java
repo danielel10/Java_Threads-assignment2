@@ -4,49 +4,50 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Statistics {
-    private int totalDataBatchProcessedByCPU; //from all cpus
-    private int totalcputicks;
-    private int totalgputicks;
     private AtomicInteger counterproceesedbatches = new AtomicInteger();
     private AtomicInteger countercputicks = new AtomicInteger();
     private AtomicInteger countergputicks= new AtomicInteger();
 
     public Statistics () {
-        totalcputicks = 0;
-        totalgputicks = 0;
-        totalDataBatchProcessedByCPU = 0;
+
+
+
     }
 
-    public void addTotalDataBatchProcessedByCPU(int totalDataBatchProcessedByCPU) {
+    public void addTotalDataBatchProcessedByCPU(int batchsfromcpu) {
+        int totalDataBatchProcessedByCPU;
         do {
-            this.totalDataBatchProcessedByCPU = counterproceesedbatches.get();
-        }while(!counterproceesedbatches.compareAndSet(this.totalDataBatchProcessedByCPU,this.totalDataBatchProcessedByCPU + totalDataBatchProcessedByCPU));
+            totalDataBatchProcessedByCPU = counterproceesedbatches.get();
+        }while(!counterproceesedbatches.compareAndSet(totalDataBatchProcessedByCPU,totalDataBatchProcessedByCPU + batchsfromcpu));
+//        System.out.println("CPU batches " + counterproceesedbatches.get());
     }
 
-    public void addTotalcputicks(int totalcputicks) {
+    public void addTotalcputicks(int cputicks) {
+        int totalcputicks;
         do {
-            this.totalcputicks = countercputicks.get();
-        }while(!countercputicks.compareAndSet(this.totalcputicks,this.totalcputicks + totalcputicks));
-        System.out.println("CPU ticks " + countercputicks.get());
+            totalcputicks = countercputicks.get();
+        }while(!countercputicks.compareAndSet(totalcputicks,totalcputicks + cputicks));
+//        System.out.println("CPU ticks " + countercputicks.get());
     }
 
-    public void addTotalgputicks(int totalgputicks) {
+    public void addTotalgputicks(int gputicks) {
+        int totalgputicks;
         do {
-            this.totalgputicks = countergputicks.get();
+            totalgputicks = countergputicks.get();
 
-        }while(!countergputicks.compareAndSet(this.totalgputicks,this.totalgputicks + totalgputicks));
-        System.out.println("GPU ticks " + countergputicks.get() + this);
+        }while(!countergputicks.compareAndSet(totalgputicks,totalgputicks + gputicks));
+//        System.out.println("GPU ticks " + countergputicks.get());
     }
 
     public int getTotalcputicks() {
-        return totalcputicks;
+        return countercputicks.get();
     }
 
     public int getTotalDataBatchProcessedByCPU() {
-        return totalDataBatchProcessedByCPU;
+        return counterproceesedbatches.get();
     }
 
     public int getTotalgputicks() {
-        return totalgputicks;
+        return countergputicks.get();
     }
 }

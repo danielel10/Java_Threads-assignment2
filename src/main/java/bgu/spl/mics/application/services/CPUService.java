@@ -40,11 +40,12 @@ public class CPUService extends MicroService {
         TickBroadcastCallback = Tickbroadcast -> {
             DataBatch batch = cpu.getBatch();
             if(batch != null) {
-                System.out.println("CPU processing");
+//                System.out.println("CPU processing");
                 total_tick ++;
                 switch (batch.getTypeToSring()) {
                     case ("Images") :
                         if (curr_tick_image == cpu.getTotal_time_worked() * 4) {
+                            System.out.println(name + " sent to GPU");
                             cpu.SendToGPU(cpu.processData());
                             total_batches_processed++;
                             curr_tick_image = 1;
@@ -84,6 +85,7 @@ public class CPUService extends MicroService {
         terminateBroadcastCallback = c -> {
             statistics.addTotalcputicks(total_tick);
             statistics.addTotalDataBatchProcessedByCPU(total_batches_processed);
+            System.out.println(getName() + " is terminating");
             terminate();
         };
     }

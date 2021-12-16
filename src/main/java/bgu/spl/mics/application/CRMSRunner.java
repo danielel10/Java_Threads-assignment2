@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class CRMSRunner {
     public static void main(String[] args) {
-        File input = new File("/home/daniel/IdeaProjects/assignment2/example_input.json");
+        File input = new File("/home/daniel/Downloads/assignment2/example_input.json");
         List<Student> Students =  new ArrayList<>();
         List<Model> Models =  new ArrayList<>();
         LinkedList<GPU> gpus =  new LinkedList<>();
@@ -94,12 +94,14 @@ public class CRMSRunner {
             Cluster cluster = Cluster.getInstance(gpus,cpus);
             Statistics statistics = new Statistics();
             nam = 1;
+            LinkedList<Thread> threads = new LinkedList<>();
             for (GPU gpu : gpus) {
                 gpu.setCluster(cluster);
                 GPUService gpuService = new GPUService("gpu"+ nam,gpu,statistics);
                 nam++;
                 Thread gpuT = new Thread(gpuService);
                 gpuT.start();
+                threads.add(gpuT);
             }
             nam = 1;
             for (CPU cpu : cpus) {
@@ -108,29 +110,33 @@ public class CRMSRunner {
                 nam++;
                 Thread cpuT = new Thread(cpuService);
                 cpuT.start();
+                threads.add(cpuT);
             }
             TotalConferenceData total = new TotalConferenceData();
             for (ConfrenceInformation confrenceInformation: confrenceInformations) {
                 ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
                 Thread conf = new Thread(conferenceService);
                 conf.start();
+                threads.add(conf);
             }
             for (Student student: Students) {
                 StudentService studentService = new StudentService(student);
                 Thread studentT = new Thread(studentService);
                 studentT.start();
+                threads.add(studentT);
             }
             TimeService timeService = new TimeService(duration,tick);
             Thread timeserviceT = new Thread(timeService);
             timeserviceT.start();
 
             timeserviceT.join();
+            for (Thread t: threads) {
+                t.join();
+            }
 
-            System.out.println(statistics.getTotalcputicks());
-            System.out.println(statistics.getTotalgputicks());
-            System.out.println(statistics.getTotalDataBatchProcessedByCPU());
-
-
+            System.out.println("cpu ticks " + statistics.getTotalcputicks());
+            System.out.println("gpu ticks " + statistics.getTotalgputicks());
+            System.out.println("batches cpu processed "+ statistics.getTotalDataBatchProcessedByCPU());
 
 
         } catch (FileNotFoundException ex) {
@@ -143,7 +149,6 @@ public class CRMSRunner {
 //        }
 
 
-//        TimeService timeService = new TimeService(0,0);
 
 //
     }
