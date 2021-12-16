@@ -199,6 +199,7 @@ public class CRMSRunner {
 
             System.out.println("cpu ticks " + statistics.getTotalcputicks());
             System.out.println("gpu ticks " + statistics.getTotalgputicks());
+            System.out.println("batches gpu trained " + statistics.getgpubatches());
             System.out.println("batches cpu processed "+ statistics.getTotalDataBatchProcessedByCPU());
 
 

@@ -7,6 +7,7 @@ public class Statistics {
     private AtomicInteger counterproceesedbatches = new AtomicInteger();
     private AtomicInteger countercputicks = new AtomicInteger();
     private AtomicInteger countergputicks= new AtomicInteger();
+    private AtomicInteger countergpubatches = new AtomicInteger();
 
     public Statistics () {
 
@@ -36,6 +37,15 @@ public class Statistics {
         }while(!countergputicks.compareAndSet(totalgputicks,totalgputicks + gputicks));
     }
 
+    public void addTotalgpubatches(int gputicks) {
+        int totalgpubtaches;
+        do {
+            totalgpubtaches = countergpubatches.get();
+
+        }while(!countergpubatches.compareAndSet(totalgpubtaches,totalgpubtaches + gputicks));
+    }
+
+
     public int getTotalcputicks() {
         return countercputicks.get();
     }
@@ -46,5 +56,9 @@ public class Statistics {
 
     public int getTotalgputicks() {
         return countergputicks.get();
+    }
+
+    public int getgpubatches() {
+        return countergpubatches.get();
     }
 }

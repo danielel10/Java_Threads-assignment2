@@ -57,6 +57,7 @@ public class GPUService extends MicroService {
                 totaltick ++;
                 if (currtick == gpu.getTick()) {
                     System.out.println("GPU processing");
+                    statistics.addTotalgpubatches(1);
                     gpu.train(gpu.DataBatchesRecivedFromCPU.remove());
                     currtick = 1;
                     if(!BatchesWaitingToBeingSentToCluster.isEmpty()) {
