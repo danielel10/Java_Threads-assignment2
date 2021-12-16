@@ -16,7 +16,7 @@ public class TotalConferenceData {
         confrenceInformationConcurrentLinkedQueue.add(c);
     }
 
-    public ConfrenceInformation getConfe() {
-        return confrenceInformationConcurrentLinkedQueue.remove();
+    public ConcurrentLinkedQueue<ConfrenceInformation> getConferences() {
+        return confrenceInformationConcurrentLinkedQueue;
     }
 }

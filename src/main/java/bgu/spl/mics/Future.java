@@ -39,9 +39,8 @@ public class Future<T> {
 				wait();
 			} catch (Exception e) {
 			}
-			System.out.println("Student is not waiting");
-
 		}
+		System.out.println("Student is not waiting");
 		return result;
 	}
 	

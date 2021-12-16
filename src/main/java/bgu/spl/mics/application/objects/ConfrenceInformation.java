@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.objects;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 /**
@@ -10,19 +11,20 @@ public class ConfrenceInformation {
 
     private String name;
     private int date;
-    private Vector<Model> modelVector;
+    private LinkedList<Model> models;
 
     public ConfrenceInformation(String name, int date ) {
         this.name = name;
         this.date = date;
+        models = new LinkedList<>();
     }
 
     public void addModel(Model m) {
-        modelVector.add(m);
+        models.add(m);
     }
 
-    public Vector<Model> getModelVector() {
-        return modelVector;
+    public LinkedList<Model> getModelVector() {
+        return models;
     }
 
     public int getDate(){

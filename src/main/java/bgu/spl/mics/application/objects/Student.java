@@ -20,7 +20,6 @@ public class Student {
     private String department;
     private Degree status;
     private LinkedList<Model> myModels;
-    private int sentModelsToConference;
     private int publications;
     private int papersRead;
 
@@ -31,10 +30,11 @@ public class Student {
         switch (status) {
             case "MSc" :
                 this.status = Degree.MSc;
+                break;
             case "PhD":
                 this.status = Degree.PhD;
+                break;
         }
-        sentModelsToConference = 0;
         publications = 0;
         papersRead = 0;
     }
@@ -67,4 +67,11 @@ public class Student {
         return publications;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public int getPapersRead() {
+        return papersRead;
+    }
 }

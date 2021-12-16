@@ -44,4 +44,16 @@ public class Model {
         else
             result = Result.Bad;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getResult() {
+        return result.toString();
+    }
+
+    public String getStatus() {
+        return status.toString();
+    }
 }

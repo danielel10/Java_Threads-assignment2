@@ -97,14 +97,14 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized  <T> Future<T> sendEvent(Event<T> e) {
 		Future<T> tosend = new Future<T>();
 		if (EventsMap.get(e.getClass()) != null) {
-			futureEventMap.put(e,tosend);
 
-				LinkedList<MicroService> list = EventsMap.get(e.getClass());
-				MicroService m = list.getFirst();
-				MicroserivesQ.get(list.getFirst()).add(e);
-				list.addLast(list.getFirst());
-				list.removeFirst();
-				return tosend;
+			futureEventMap.put(e,tosend);
+			LinkedList<MicroService> list = EventsMap.get(e.getClass());
+			MicroService m = list.getFirst();
+			MicroserivesQ.get(list.getFirst()).add(e);
+			list.addLast(list.getFirst());
+			list.removeFirst();
+			return tosend;
 
 		}
 		else {

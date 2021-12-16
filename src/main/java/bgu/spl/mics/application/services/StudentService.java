@@ -34,7 +34,8 @@ public class StudentService extends MicroService {
         this.student = student;
         models = student.getMyModels();
         terminateBroadcastCallback = message -> {
-            System.out.println(getName() + " is terminating");
+
+            System.out.println(getName() + " terminating");
             terminate();
         };
         tickBroadcastCallback = message -> {
@@ -43,13 +44,14 @@ public class StudentService extends MicroService {
                 Data students_data = model.getData();
                 Future<Data> future = sendEvent(new TrainModelEvent(students_data,model));
                 System.out.println(getName() + " is now waiting");
-                Data data = future.get(message.getDuration(), TimeUnit.MICROSECONDS);
+                Data data = future.get();
                 if (data != null) {
                     Future<Integer> testresult = sendEvent(new TestModelEvent());
                     testresult.get();
+                    data.setmodel_tested();
                     System.out.println(getName() + " finished event");
-                    if(student.getStatus() == "Msc" ) {
-                        Integer num = 6;
+                    if(student.getStatus() == "MSc" ) {
+                        Integer num = 5;
                         if (testresult.get() <= num) {
                             model.setResult("g");
                             model.setmodel_Tested();

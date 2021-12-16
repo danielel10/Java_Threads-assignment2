@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class CRMSRunner {
     public static void main(String[] args) {
-        File input = new File("/home/daniel/Downloads/assignment2/example_input.json");
+        File input = new File("/home/daniel/IdeaProjects/assignment2/example_input.json");
         List<Student> Students =  new ArrayList<>();
         List<Model> Models =  new ArrayList<>();
         LinkedList<GPU> gpus =  new LinkedList<>();
@@ -48,6 +48,7 @@ public class CRMSRunner {
                 String department = StudentJsonObject.get("department").getAsString();
                 String status = StudentJsonObject.get("status").getAsString();
                 Student student = new Student(name, department, status);
+                Students.add(student);
                 for (JsonElement ModelsElement : JsonArrayOfModels) {
                     JsonObject ModelsJsonObjects = ModelsElement.getAsJsonObject();
                     //extract data
@@ -57,7 +58,6 @@ public class CRMSRunner {
                     Data data = new Data(ModelType, ModelSize, null);
                     Model model = new Model(student, data, ModelName);
                     data.setModel(model);
-                    Students.add(student);
                     Models.add(model);
                     student.addModel(model);
                 }
@@ -135,9 +135,44 @@ public class CRMSRunner {
                 t.join();
             }
 
+            for (Student s: Students) {
+                s.getName();
+                s.getDepartment();
+                s.getStatus();
+                s.getPublications();
+                s.getPapersRead();
+                for (Model m: s.getMyModels()) {
+                    m.getName();
+                    Data data = m.getData();
+                    data.getType();
+                    data.getSize();
+                    m.getStatus();
+                    m.getResult();
+                }
+            }
+
+
+            for (ConfrenceInformation c: confrenceInformations) {
+                c.getName();
+                c.getDate();
+                c.getModelVector();
+                for (Model m: c.getModelVector()) {
+                    m.getName();
+                    //
+                    Data data = m.getData();
+                    data.getType();
+                    data.getSize();
+                    //
+                    m.getStatus();
+                    m.getResult();
+                }
+
+            }
+
             System.out.println("cpu ticks " + statistics.getTotalcputicks());
             System.out.println("gpu ticks " + statistics.getTotalgputicks());
             System.out.println("batches cpu processed "+ statistics.getTotalDataBatchProcessedByCPU());
+
 
 
         } catch (FileNotFoundException ex) {

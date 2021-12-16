@@ -19,7 +19,6 @@ public class Statistics {
         do {
             totalDataBatchProcessedByCPU = counterproceesedbatches.get();
         }while(!counterproceesedbatches.compareAndSet(totalDataBatchProcessedByCPU,totalDataBatchProcessedByCPU + batchsfromcpu));
-//        System.out.println("CPU batches " + counterproceesedbatches.get());
     }
 
     public void addTotalcputicks(int cputicks) {
@@ -27,7 +26,6 @@ public class Statistics {
         do {
             totalcputicks = countercputicks.get();
         }while(!countercputicks.compareAndSet(totalcputicks,totalcputicks + cputicks));
-//        System.out.println("CPU ticks " + countercputicks.get());
     }
 
     public void addTotalgputicks(int gputicks) {
@@ -36,7 +34,6 @@ public class Statistics {
             totalgputicks = countergputicks.get();
 
         }while(!countergputicks.compareAndSet(totalgputicks,totalgputicks + gputicks));
-//        System.out.println("GPU ticks " + countergputicks.get());
     }
 
     public int getTotalcputicks() {

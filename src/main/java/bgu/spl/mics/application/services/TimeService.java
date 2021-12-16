@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
@@ -25,6 +26,7 @@ public class TimeService extends MicroService{
 	private TimerTask timerTask;
 	private TimerTask terminatetask;
 	private TickBroadcast tickBroadcast;
+	private Callback<TerminateBroadcast> terminateBroadcastCallback;
 	private int time;
 
 	public TimeService(long duration, long howmuchmilisecondforatick) {
@@ -49,13 +51,17 @@ public class TimeService extends MicroService{
 			}
 		};
 
+		terminateBroadcastCallback = me -> {
+			terminate();
+		};
+
 	}
 
 	@Override
 	protected void initialize() {
+		subscribeBroadcast(TerminateBroadcast.class, terminateBroadcastCallback);
 		timer.scheduleAtFixedRate(timerTask,0,mili);
 		timer.schedule(terminatetask,duration);
-		terminate();
 
 	}
 

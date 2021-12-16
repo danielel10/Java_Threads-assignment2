@@ -87,6 +87,10 @@ public class GPUService extends MicroService {
         terminateBroadcastCallback = ter -> {
           statistics.addTotalgputicks(totaltick);
           System.out.println(getName() + " is terminating");
+          while(!trainModelEvents.isEmpty()) {
+              Data nulldata = new Data("Images",0,null);
+              complete(trainModelEvents.remove(), nulldata);
+          }
           terminate();
         };
 
