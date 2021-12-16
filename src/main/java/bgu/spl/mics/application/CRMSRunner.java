@@ -8,14 +8,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.InputStreamReader;
-import java.io.FileReader;
+
+import java.io.*;
+
 import bgu.spl.mics.application.objects.Student;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+
 
 /** This is the Main class of Compute Resources Management System application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -135,20 +135,48 @@ public class CRMSRunner {
                 t.join();
             }
 
+
+            JsonArray studentsObj = new JsonArray();
+
             for (Student s: Students) {
-                s.getName();
-                s.getDepartment();
-                s.getStatus();
-                s.getPublications();
-                s.getPapersRead();
-                for (Model m: s.getMyModels()) {
-                    m.getName();
-                    Data data = m.getData();
-                    data.getType();
-                    data.getSize();
-                    m.getStatus();
-                    m.getResult();
+
+                JsonObject sObj = new JsonObject();
+                sObj.addProperty("name",s.getName());
+                sObj.addProperty("department",s.getDepartment());
+                sObj.addProperty("status",s.getStatus());
+                sObj.addProperty("publications",s.getPublications());
+                sObj.addProperty("papersRead",s.getPapersRead());
+
+
+                JsonArray modelsObj = new JsonArray();
+                for (Model m: s.getModelsforjson()) {
+                    if (m.getResult() == "Good" | m.getResult() == "Bad") {
+                        JsonObject mObj = new JsonObject();
+                        mObj.addProperty("name",m.getName());
+                        //data
+                        Data data = m.getData();
+                        JsonObject dObj = new JsonObject();
+                        dObj.addProperty("type",data.getType());
+                        dObj.addProperty("size",data.getSize());
+                        //
+                        mObj.add("data",dObj);
+                        mObj.addProperty("status",m.getStatus());
+                        mObj.addProperty("results", m.getResult());
+                        modelsObj.add(mObj);
+                    }
                 }
+                sObj.add("trainedModels", modelsObj);
+                studentsObj.add(sObj);
+            }
+            JsonObject allstudents = new JsonObject();
+            allstudents.add("Students",studentsObj);
+
+            try {
+                FileWriter file = new FileWriter("test.json");
+                file.write(allstudents.toString());
+                file.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
 

@@ -89,7 +89,10 @@ public class StudentService extends MicroService {
         };
 
         publishConferenceBroadcastCallback = message -> {
-            student.addReads(message.totalmodels - student.getPublications());
+            for (Model m: message.totalmodels) {
+                if(!student.getModelsforjson().contains(m))
+                    student.addReads(1);
+            }
         };
 
     }

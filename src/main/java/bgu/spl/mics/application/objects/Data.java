@@ -46,8 +46,8 @@ public class Data {
         this.processed = this.processed + processed;
     }
 
-    public Type getType() {
-        return type;
+    public String getType() {
+        return type.toString();
     }
 
     public String getTypeToString() {

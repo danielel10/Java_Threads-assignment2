@@ -37,7 +37,7 @@ public class DataBatch {
         return who_sent;
     }
 
-    public Data.Type getType() {
+    public String getType() {
         return data.getType();
     }
 

@@ -44,7 +44,7 @@ public class ConferenceService extends MicroService {
             curr_tick ++;
             if (curr_tick == ticks_to_terminate) {
                 totalConferenceData.addconference(confrenceInformation);
-                sendBroadcast(new PublishConferenceBroadcast(confrenceInformation.getModelVector().size()));
+                sendBroadcast(new PublishConferenceBroadcast(confrenceInformation.getModelVector()));
                 terminate();
             }
         };

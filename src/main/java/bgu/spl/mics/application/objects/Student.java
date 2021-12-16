@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 /**
@@ -20,6 +21,7 @@ public class Student {
     private String department;
     private Degree status;
     private LinkedList<Model> myModels;
+    private LinkedList<Model> models;
     private int publications;
     private int papersRead;
 
@@ -27,6 +29,7 @@ public class Student {
         this.name = name;
         department = depar;
         myModels = new LinkedList<>();
+        models = new LinkedList<>();
         switch (status) {
             case "MSc" :
                 this.status = Degree.MSc;
@@ -45,6 +48,11 @@ public class Student {
 
     public void addModel(Model m) {
         myModels.add(m);
+        models.add(m);
+    }
+
+    public LinkedList<Model> getModelsforjson() {
+        return models;
     }
 
     public String getName() {
@@ -56,7 +64,7 @@ public class Student {
     }
 
     public void addReads(int reads) {
-        papersRead =+ reads;
+        papersRead = papersRead + reads;
     }
 
     public LinkedList<Model> getMyModels() {

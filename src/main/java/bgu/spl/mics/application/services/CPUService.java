@@ -40,7 +40,6 @@ public class CPUService extends MicroService {
         TickBroadcastCallback = Tickbroadcast -> {
             DataBatch batch = cpu.getBatch();
             if(batch != null) {
-//                System.out.println("CPU processing");
                 total_tick ++;
                 switch (batch.getTypeToSring()) {
                     case ("Images") :
