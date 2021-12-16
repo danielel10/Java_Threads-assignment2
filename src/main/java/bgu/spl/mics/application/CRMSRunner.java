@@ -3,10 +3,7 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.Future;
 import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.objects.*;
-import bgu.spl.mics.application.services.CPUService;
-import bgu.spl.mics.application.services.ConferenceService;
-import bgu.spl.mics.application.services.GPUService;
-import bgu.spl.mics.example.services.ExampleMessageSenderService;
+import bgu.spl.mics.application.services.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,10 +15,7 @@ import bgu.spl.mics.application.objects.Student;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /** This is the Main class of Compute Resources Management System application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -29,29 +23,12 @@ import java.util.Vector;
  */
 public class CRMSRunner {
     public static void main(String[] args) {
-//        GPU gpu = new GPU("RTX3090","test");
-//        CPU cpu = new CPU(32,"name");
-//        LinkedList<GPU> gpuLinkedList = new LinkedList<>();
-//        gpuLinkedList.add(gpu);
-//        Vector<CPU> cpuVector = new Vector<>();
-//        cpuVector.add(cpu);
-//        Cluster cluster = Cluster.getInstance(gpuLinkedList,cpuVector);
-//        gpu.setCluster(cluster);
-//        cpu.setCluster(cluster);
-//        System.out.println(cpu.getClass().getName());
-//        Statistics statistics = new Statistics();
-//        GPUService gpuService = new GPUService("test",gpu,statistics);
-//        Thread gput = new Thread(gpuService);
-//        gput.start();
-//        CPUService cpuService = new CPUService("t",cpu,statistics);
-//        Thread cput = new Thread(cpuService);
-//        cput.start();
-//        ConferenceService conferenceService = new ConferenceService("cc",0);
-//        Thread conf = new Thread(conferenceService);
-//        conf.start();
-
         File input = new File("/home/daniel/IdeaProjects/assignment2/example_input.json");
-        List<Student> Students = null;
+        List<Student> Students =  new ArrayList<>();
+        List<Model> Models =  new ArrayList<>();
+        LinkedList<GPU> gpus =  new LinkedList<>();
+        Vector<CPU> cpus = new Vector<>();
+        List<ConfrenceInformation> confrenceInformations =  new ArrayList<>();
         try {
             JsonElement fileEle = JsonParser.parseReader(new FileReader(input));
             JsonObject fileObj = fileEle.getAsJsonObject();
@@ -60,10 +37,8 @@ public class CRMSRunner {
             long tick = fileObj.get("TickTime").getAsLong();
             long duration = fileObj.get("Duration").getAsLong();
 
-
             //process all Students
             JsonArray JsonArrayOfStudent = fileObj.get("Students").getAsJsonArray();
-            Students = new ArrayList<>();
             for (JsonElement StudentElement : JsonArrayOfStudent) {
                 //get the Json Object
                 JsonObject StudentJsonObject = StudentElement.getAsJsonObject();
@@ -83,15 +58,94 @@ public class CRMSRunner {
                     Model model = new Model(student, data, ModelName);
                     data.setModel(model);
                     Students.add(student);
+                    Models.add(model);
+                    student.addModel(model);
                 }
+
             }
+            int nam = 1;
+            //get GPUS
+            JsonArray JsonArrayOfGpu = fileObj.get("GPUS").getAsJsonArray();
+            for (JsonElement GpuElement : JsonArrayOfGpu) {
+                String type = GpuElement.getAsString();
+                GPU gpu = new GPU(type,"gpu"+nam);
+                gpus.add(gpu);
+                nam++;
+            }
+            nam = 1;
+            //get CPUS
+            JsonArray JsonArrayOfCpu = fileObj.get("CPUS").getAsJsonArray();
+            for (JsonElement CpuElement : JsonArrayOfCpu) {
+                int NumOfCpus = CpuElement.getAsInt();
+                CPU cpu = new CPU(NumOfCpus,"cpu" + nam);
+                cpus.add(cpu);
+                nam++;
+            }
+            nam = 1;
+            //get CONFERENCES
+            JsonArray JsonArrayOfConferance = fileObj.get("Conferences").getAsJsonArray();
+            for (JsonElement ConferanceElement : JsonArrayOfConferance) {
+                JsonObject ConferanceJsonObject = ConferanceElement.getAsJsonObject();
+                String name = ConferanceJsonObject.get("name").getAsString();
+                int date = ConferanceJsonObject.get("date").getAsInt();
+                ConfrenceInformation confrenceInformation = new ConfrenceInformation(name,date);
+                confrenceInformations.add(confrenceInformation);
+            }
+            Cluster cluster = Cluster.getInstance(gpus,cpus);
+            Statistics statistics = new Statistics();
+            nam = 1;
+            for (GPU gpu : gpus) {
+                gpu.setCluster(cluster);
+                GPUService gpuService = new GPUService("gpu"+ nam,gpu,statistics);
+                nam++;
+                Thread gpuT = new Thread(gpuService);
+                gpuT.start();
+            }
+            nam = 1;
+            for (CPU cpu : cpus) {
+                cpu.setCluster(cluster);
+                CPUService cpuService = new CPUService("cpu"+ nam,cpu,statistics);
+                nam++;
+                Thread cpuT = new Thread(cpuService);
+                cpuT.start();
+            }
+            TotalConferenceData total = new TotalConferenceData();
+            for (ConfrenceInformation confrenceInformation: confrenceInformations) {
+                ConferenceService conferenceService = new ConferenceService(confrenceInformation.getName(),confrenceInformation.getDate(),confrenceInformation,total);
+                Thread conf = new Thread(conferenceService);
+                conf.start();
+            }
+            for (Student student: Students) {
+                StudentService studentService = new StudentService(student);
+                Thread studentT = new Thread(studentService);
+                studentT.start();
+            }
+            TimeService timeService = new TimeService(duration,tick);
+            Thread timeserviceT = new Thread(timeService);
+            timeserviceT.start();
+
+            timeserviceT.join();
+
+            System.out.println(statistics.getTotalcputicks());
+            System.out.println(statistics.getTotalgputicks());
+            System.out.println(statistics.getTotalDataBatchProcessedByCPU());
+
+
 
 
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
 
+//        TimeService timeService = new TimeService(0,0);
+
+//
     }
     }
 

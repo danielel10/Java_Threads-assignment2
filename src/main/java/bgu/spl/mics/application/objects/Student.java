@@ -27,6 +27,7 @@ public class Student {
     public Student(String name, String depar, String status) {
         this.name = name;
         department = depar;
+        myModels = new LinkedList<>();
         switch (status) {
             case "MSc" :
                 this.status = Degree.MSc;

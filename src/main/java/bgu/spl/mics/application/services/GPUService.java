@@ -35,7 +35,7 @@ public class GPUService extends MicroService {
         super(name + " Service");
         this.statistics = statistics;
         this.gpu = gpu;
-        currtick = 0;
+        currtick = 1;
         totaltick = 0;
         BatchesWaitingToBeingSentToCluster = new LinkedList<>();
         trainModelEvents = new LinkedList<>();
@@ -54,17 +54,17 @@ public class GPUService extends MicroService {
         };
         TickBroadcastCallback = Tickbroadcast -> {
             if(!gpu.DataBatchesRecivedFromCPU.isEmpty()) {
-                totaltick =+ 1;
+                totaltick ++;
                 if (currtick == gpu.getTick()) {
-                    System.out.println("GPU enterd");
+                    System.out.println("GPU processing");
                     gpu.train(gpu.DataBatchesRecivedFromCPU.remove());
-                    currtick = 0;
+                    currtick = 1;
                     if(!BatchesWaitingToBeingSentToCluster.isEmpty()) {
                         gpu.sendTocluster(BatchesWaitingToBeingSentToCluster.remove());
                     }
                     if(gpu.getCurrenData().getSize() == gpu.getCurrenData().HowManyProcessed()) {
-                        System.out.println("GPU complete");
                         gpu.getCurrenData().setmodel_trained();
+                        System.out.println("GPU complete " + name);
                         complete(trainModelEvents.remove(), gpu.getCurrenData());
                         gpu.SetData(null,null);
                         if(!trainModelEvents.isEmpty())
@@ -109,7 +109,7 @@ public class GPUService extends MicroService {
             int index = 0;
             for (int i = 0; i < data.getSize()/1000; i++) {
                 BatchesWaitingToBeingSentToCluster.add(new DataBatch(data,index));
-                index =+ 1000;
+                index = index + 1000;
             }
             while (gpu.VramCapacity != 0 & !BatchesWaitingToBeingSentToCluster.isEmpty()) {
                 gpu.sendTocluster(BatchesWaitingToBeingSentToCluster.remove());
