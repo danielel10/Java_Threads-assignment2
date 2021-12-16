@@ -32,7 +32,7 @@ public class TimeService extends MicroService{
 		this.duration = duration;
 		mili = howmuchmilisecondforatick;
 		timer = new Timer();
-		tickBroadcast = new TickBroadcast();
+		tickBroadcast = new TickBroadcast(duration);
 		time = 0;
 		timerTask = new TimerTask() {
 			public void run() {

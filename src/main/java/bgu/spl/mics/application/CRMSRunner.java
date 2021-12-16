@@ -130,6 +130,7 @@ public class CRMSRunner {
             timeserviceT.start();
 
             timeserviceT.join();
+
             for (Thread t: threads) {
                 t.join();
             }

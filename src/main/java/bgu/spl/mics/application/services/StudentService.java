@@ -11,6 +11,7 @@ import bgu.spl.mics.application.objects.Student;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Student is responsible for sending the {@link TrainModelEvent},
@@ -41,38 +42,47 @@ public class StudentService extends MicroService {
                 Model model = models.remove();
                 Data students_data = model.getData();
                 Future<Data> future = sendEvent(new TrainModelEvent(students_data,model));
-                future.get();
-                Future<Integer> testresult = sendEvent(new TestModelEvent());
-                testresult.get();
-                System.out.println(getName() + " finished event");
-                if(student.getStatus() == "Msc" ) {
-                    Integer num = 6;
-                    if (testresult.get() <= num) {
-                        model.setResult("g");
-                        model.setmodel_Tested();
-                        student.addPublication();
-                        sendEvent(new PublishResultsEvent(model));
+                System.out.println(getName() + " is now waiting");
+                Data data = future.get(message.getDuration(), TimeUnit.MICROSECONDS);
+                if (data != null) {
+                    Future<Integer> testresult = sendEvent(new TestModelEvent());
+                    testresult.get();
+                    System.out.println(getName() + " finished event");
+                    if(student.getStatus() == "Msc" ) {
+                        Integer num = 6;
+                        if (testresult.get() <= num) {
+                            model.setResult("g");
+                            model.setmodel_Tested();
+                            student.addPublication();
+                            sendEvent(new PublishResultsEvent(model));
+                        }
+                        else {
+                            model.setResult("b");
+                            model.setmodel_Tested();
+                        }
+
                     }
                     else {
-                        model.setResult("b");
-                        model.setmodel_Tested();
-                    }
+                        Integer num = 7;
+                        if (testresult.get() <= num) {
+                            model.setResult("g");
+                            model.setmodel_Tested();
+                            student.addPublication();
+                            sendEvent(new PublishResultsEvent(model));
+                        }
+                        else {
+                            model.setResult("b");
+                            model.setmodel_Tested();
+                        }
 
+                    }
                 }
                 else {
-                    Integer num = 7;
-                    if (testresult.get() <= num) {
-                        model.setResult("g");
-                        model.setmodel_Tested();
-                        student.addPublication();
-                        sendEvent(new PublishResultsEvent(model));
+                    while (!models.isEmpty()) {
+                        models.remove();
                     }
-                    else {
-                        model.setResult("b");
-                        model.setmodel_Tested();
-                    }
-
                 }
+
             }
         };
 

@@ -84,25 +84,25 @@ public class Future<T> {
 			switch (unit) {
 				case DAYS:
 					try {
-						wait(TimeUnit.DAYS.toMillis(timeout));
+						wait(unit.DAYS.toMillis(timeout));
 						return result;
 					} catch (Exception e) {
 					}
 				case HOURS:
 					try {
-						wait(TimeUnit.HOURS.toMillis(timeout));
+						wait(unit.HOURS.toMillis(timeout));
 						return result;
 					} catch (Exception e) {
 					}
 				case MINUTES:
 					try {
-						wait(TimeUnit.MINUTES.toMillis(timeout));
+						wait(unit.MINUTES.toMillis(timeout));
 						return result;
 					} catch (Exception e) {
 					}
 				case SECONDS:
 					try {
-						wait(TimeUnit.SECONDS.toMillis(timeout));
+						wait(unit.SECONDS.toMillis(timeout));
 						return result;
 					} catch (Exception e) {
 					}

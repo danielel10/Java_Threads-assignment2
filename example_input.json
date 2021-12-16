@@ -20,24 +20,10 @@
                 {
                     "name": "LessEfficientNet",
                     "type": "Images",
-                    "size": 20000
+                    "size": 200000
                 },
                 {
                     "name": "DensestNet",
-                    "type": "Images",
-                    "size": 200000
-                }
-            ]
-
-        },
-        {
-            "name": "Zazu",
-            "department": "EE",
-            "status": "PhD",
-            "models":
-            [
-                {
-                    "name": "VIT",
                     "type": "Images",
                     "size": 100000000
                 }
@@ -45,8 +31,8 @@
 
         }
     ],
-    "GPUS": ["RTX3090","RTX3090","RTX2080","GTX1080"],
-    "CPUS": [32,32,32,16,16,16,16],
+    "GPUS": ["RTX3090"],
+    "CPUS": [32],
     "Conferences":
     [
         {"name": "ICML", "date": 20000},
@@ -56,5 +42,5 @@
         {"name": "AISTATS", "date": 50000}
     ],
     "TickTime": 1,
-    "Duration": 10000
+    "Duration": 5000
 }
