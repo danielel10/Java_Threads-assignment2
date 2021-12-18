@@ -38,7 +38,6 @@ public class TimeService extends MicroService{
 		time = 0;
 		timerTask = new TimerTask() {
 			public void run() {
-				System.out.println(time);
 				sendBroadcast(tickBroadcast);
 				time ++;
 			}
@@ -46,7 +45,6 @@ public class TimeService extends MicroService{
 		terminatetask = new TimerTask() {
 			public void run() {
 				sendBroadcast(new TerminateBroadcast());
-				System.out.println("terminnating");
 				timer.cancel();
 			}
 		};

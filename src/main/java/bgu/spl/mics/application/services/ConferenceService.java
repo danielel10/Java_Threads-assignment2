@@ -64,19 +64,3 @@ public class ConferenceService extends MicroService {
 }
 
 
-
-    //not intended//////////////////////////
-    //not intended///////////////////
-//    Model model = null;
-//    Data data = new Data("Text",1000, model);
-    //        TrainModelEvent trainModelEvent = new TrainModelEvent(data,model);
-//        t = sendEvent(trainModelEvent);
-//    sendBroadcast(new TickBroadcast());
-//        sendBroadcast(new TickBroadcast());
-//        sendBroadcast(new TickBroadcast());
-//        sendBroadcast(new TickBroadcast());
-//        sendBroadcast(new TickBroadcast());
-//        //////////////////////////////////////
-//        Data data1 = t.get();
-//        System.out.println("I GOT IT!!!! CONFERENCEEE");
-/////////////////////////////////////////

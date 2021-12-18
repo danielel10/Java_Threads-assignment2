@@ -56,7 +56,6 @@ public class GPUService extends MicroService {
             if(!gpu.DataBatchesRecivedFromCPU.isEmpty()) {
                 totaltick ++;
                 if (currtick == gpu.getTick()) {
-                    System.out.println("GPU processing");
                     statistics.addTotalgpubatches(1);
                     gpu.train(gpu.DataBatchesRecivedFromCPU.remove());
                     currtick = 1;
@@ -65,7 +64,6 @@ public class GPUService extends MicroService {
                     }
                     if(gpu.getCurrenData().getSize() == gpu.getCurrenData().HowManyProcessed()) {
                         gpu.getCurrenData().setmodel_trained();
-                        System.out.println("GPU complete " + name);
                         complete(trainModelEvents.remove(), gpu.getCurrenData());
                         gpu.SetData(null,null);
                         if(!trainModelEvents.isEmpty())
@@ -87,7 +85,6 @@ public class GPUService extends MicroService {
         };
         terminateBroadcastCallback = ter -> {
           statistics.addTotalgputicks(totaltick);
-          System.out.println(getName() + " is terminating");
           while(!trainModelEvents.isEmpty()) {
               Data nulldata = new Data("Images",0,null);
               complete(trainModelEvents.remove(), nulldata);

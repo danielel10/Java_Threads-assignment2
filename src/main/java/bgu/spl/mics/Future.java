@@ -37,12 +37,10 @@ public class Future<T> {
 	public synchronized T get() {
 		while (!isDone()) {
 			try {
-				System.out.println("Student is waiting");
 				wait();
 			} catch (Exception e) {
 			}
 		}
-		System.out.println("Student is not waiting");
 		return result;
 	}
 	
@@ -52,7 +50,6 @@ public class Future<T> {
 	 * @post: result isn't null
      */
 	public synchronized void resolve (T result) {
-		System.out.println("GPU resolved");
 		this.result = result;
 		isdone = true;
 		notifyAll();
