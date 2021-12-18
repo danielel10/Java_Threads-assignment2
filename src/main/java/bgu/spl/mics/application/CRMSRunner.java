@@ -1,7 +1,5 @@
 package bgu.spl.mics.application;
 
-import bgu.spl.mics.Future;
-import bgu.spl.mics.application.messages.TrainModelEvent;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.JsonArray;
@@ -23,7 +21,7 @@ import java.util.*;
  */
 public class CRMSRunner {
     public static void main(String[] args) {
-        File input = new File("/home/daniel/IdeaProjects/assignment2/example_input.json");
+        File input = new File(args[0]);
         List<Student> Students =  new ArrayList<>();
         List<Model> Models =  new ArrayList<>();
         LinkedList<GPU> gpus =  new LinkedList<>();
@@ -168,40 +166,46 @@ public class CRMSRunner {
                 sObj.add("trainedModels", modelsObj);
                 studentsObj.add(sObj);
             }
-            JsonObject allstudents = new JsonObject();
-            allstudents.add("Students",studentsObj);
+
+
+            JsonArray conferences = new JsonArray();
+            for (ConfrenceInformation c: confrenceInformations) {
+                JsonObject conObj = new JsonObject();
+                conObj.addProperty("name", c.getName());
+                conObj.addProperty("date", c.getDate());
+                JsonArray conModelsObj = new JsonArray();
+                c.getModelVector();
+                for (Model m: c.getModelVector()) {
+                    JsonObject model = new JsonObject();
+                    model.addProperty("name",m.getName());
+                    //Model Data
+                    Data data = m.getData();
+                    JsonObject dObj = new JsonObject();
+                    dObj.addProperty("type",data.getType());
+                    dObj.addProperty("size",data.getSize());
+                    //
+                    model.add("data",dObj);
+                    model.addProperty("status", m.getStatus());
+                    model.addProperty("results", m.getResult());
+                    conModelsObj.add(model);
+                }
+                conObj.add("publications",conModelsObj);
+                conferences.add(conObj);
+            }
+            JsonObject alldata = new JsonObject();
+            alldata.add("Students",studentsObj);
+            alldata.add("conferences",conferences);
+            alldata.addProperty("cpuTimeUsed", statistics.getTotalcputicks());
+            alldata.addProperty("gpuTimeUsed", statistics.getTotalgputicks());
+            alldata.addProperty("batchesProcessed",statistics.getTotalDataBatchProcessedByCPU() );
 
             try {
                 FileWriter file = new FileWriter("test.json");
-                file.write(allstudents.toString());
+                file.write(alldata.toString());
                 file.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-            for (ConfrenceInformation c: confrenceInformations) {
-                c.getName();
-                c.getDate();
-                c.getModelVector();
-                for (Model m: c.getModelVector()) {
-                    m.getName();
-                    //
-                    Data data = m.getData();
-                    data.getType();
-                    data.getSize();
-                    //
-                    m.getStatus();
-                    m.getResult();
-                }
-
-            }
-
-            System.out.println("cpu ticks " + statistics.getTotalcputicks());
-            System.out.println("gpu ticks " + statistics.getTotalgputicks());
-            System.out.println("batches gpu trained " + statistics.getgpubatches());
-            System.out.println("batches cpu processed "+ statistics.getTotalDataBatchProcessedByCPU());
-
 
 
         } catch (FileNotFoundException ex) {
