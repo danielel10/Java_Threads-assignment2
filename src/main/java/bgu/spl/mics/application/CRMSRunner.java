@@ -200,7 +200,7 @@ public class CRMSRunner {
             alldata.addProperty("batchesProcessed",statistics.getTotalDataBatchProcessedByCPU() );
 
             try {
-                FileWriter file = new FileWriter("test.json");
+                FileWriter file = new FileWriter("test.txt");
                 file.write(alldata.toString());
                 file.flush();
             } catch (IOException e) {
