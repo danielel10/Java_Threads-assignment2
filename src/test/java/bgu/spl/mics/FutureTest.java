@@ -1,83 +1,85 @@
-//package bgu.spl.mics;
-//
-//import bgu.spl.mics.example.messages.ExampleBroadcast;
-//import bgu.spl.mics.example.messages.ExampleEvent;
-//import bgu.spl.mics.example.services.ExampleBroadcastListenerService;
-//import bgu.spl.mics.example.services.ExampleEventHandlerService;
-//import org.junit.Before;
-//import org.junit.Test;
-//
-//import java.util.concurrent.TimeUnit;
-//
-//import static org.junit.Assert.*;
-//
-//public class FutureTest {
-//    private static ExampleEvent event;
-//    private static Future<String> stringFuture;
-//    private static MessageBus messageBus;
-//    private static ExampleEventHandlerService eventHandlerService;
-//
-//    @Before
-//    public void setup() throws  Exception {
-//        stringFuture = new Future<String>();
-//        eventHandlerService = new ExampleEventHandlerService("testserviceE",new String[1]);
-//        messageBus = MessageBusImpl.getInstance();
-//        ExampleEvent event = new ExampleEvent("testE");
-//    }
-//
-//    @Test
-//    public void testget() {
-//        //pre
-//        Thread eventHandleThread = new Thread(eventHandlerService);
-//        eventHandleThread.start();
-//        stringFuture = messageBus.sendEvent(event);
-//        assertEquals(stringFuture,null);
-//        assertEquals(Thread.State.WAITING, eventHandleThread.getState());
-//        eventHandleThread.interrupt();
-//        messageBus.subscribeEvent(event.getClass(),eventHandlerService);
-//        stringFuture = messageBus.sendEvent(event);
-//        assertNotEquals(stringFuture,null);
-//        //post
-//        stringFuture.resolve("result");
-//        String result = stringFuture.get();
-//        assertEquals(result,"result");
-//    }
-//
-//    @Test
-//    public void testresolve() {
-//        messageBus.subscribeEvent(event.getClass(),eventHandlerService);
-//        stringFuture = messageBus.sendEvent(event);
-//        stringFuture.resolve("ans");
-//        String resultPost = stringFuture.get();
-//        assertEquals(resultPost,"ans");
-//    }
-//
-//    @Test
-//    public void testIsDone() {
-//        stringFuture.resolve("resolved!");
-//        boolean result = stringFuture.isDone();
-//        assertTrue(result);
-//    }
-//
-//    @Test
-//    public void testgetTimer() {
-//        //pre
-//        messageBus.subscribeEvent(event.getClass(),eventHandlerService);
-//        stringFuture = messageBus.sendEvent(event);
-//        assertNotEquals(stringFuture,null);
-//        //post
-//        long startTime = System.currentTimeMillis();
-//        stringFuture.get(500, TimeUnit.MILLISECONDS);
-//        if(!stringFuture.isDone()){
-//            long estimatedTime = System.currentTimeMillis() - startTime;//checking that at list 500 miliseconds have passed
-//            assertTrue(estimatedTime >= 500);
-//        }
-//        else{
-//            String result = stringFuture.get();
-//            assertNotEquals(result,null);
-//        }
-//
-//    }
-//
-//
-//}
+package bgu.spl.mics;
+
+import bgu.spl.mics.application.messages.TestModelEvent;
+import bgu.spl.mics.application.objects.GPU;
+import bgu.spl.mics.application.objects.Statistics;
+import bgu.spl.mics.application.services.GPUService;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
+
+public class FutureTest {
+    private static TestModelEvent event;
+    private static Future<Integer> intgFuture;
+    private static MessageBus messageBus;
+    private static GPUService gpuService;
+    private static GPU gpu;
+
+    @Before
+    public void setup() throws  Exception {
+        intgFuture = new Future<Integer>();
+        gpu = new GPU("GTX1080","test");
+        gpuService = new GPUService("testserviceE",gpu,new Statistics());
+        messageBus = MessageBusImpl.getInstance();
+        event = new TestModelEvent();
+    }
+
+    @Test
+    public void testget() {
+        //pre
+        Thread t = new Thread(gpuService);
+        t.start();
+        intgFuture = messageBus.sendEvent(event);
+        assertEquals(intgFuture,null);
+        assertEquals(Thread.State.WAITING, t.getState());
+        t.interrupt();
+        messageBus.subscribeEvent(event.getClass(),gpuService);
+        intgFuture = messageBus.sendEvent(event);
+        assertNotEquals(intgFuture,null);
+        //post
+        intgFuture.resolve(0);
+        Integer result = intgFuture.get();
+        assertTrue(result.equals(0));
+    }
+
+    @Test
+    public void testresolve() {
+        messageBus.subscribeEvent(event.getClass(),gpuService);
+        intgFuture = messageBus.sendEvent(event);
+        intgFuture.resolve(0);
+        Integer resultPost = intgFuture.get();
+        assertTrue(resultPost.equals(0));
+    }
+
+    @Test
+    public void testIsDone() {
+        intgFuture.resolve(0);
+        boolean result = intgFuture.isDone();
+        assertTrue(result);
+    }
+
+    @Test
+    public void testgetTimer() {
+        //pre
+        messageBus.subscribeEvent(event.getClass(),gpuService);
+        intgFuture = messageBus.sendEvent(event);
+        assertNotEquals(intgFuture,null);
+        //post
+        long startTime = System.currentTimeMillis();
+        intgFuture.get(500, TimeUnit.MILLISECONDS);
+        if(!intgFuture.isDone()){
+            long estimatedTime = System.currentTimeMillis() - startTime;//checking that at list 500 miliseconds have passed
+            assertTrue(estimatedTime >= 500);
+        }
+        else{
+            Integer result = intgFuture.get();
+            assertNotEquals(result,null);
+        }
+
+    }
+
+
+}

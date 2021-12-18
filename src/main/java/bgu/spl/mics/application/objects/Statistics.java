@@ -11,8 +11,6 @@ public class Statistics {
 
     public Statistics () {
 
-
-
     }
 
     public void addTotalDataBatchProcessedByCPU(int batchsfromcpu) {
@@ -58,7 +56,4 @@ public class Statistics {
         return countergputicks.get();
     }
 
-    public int getgpubatches() {
-        return countergpubatches.get();
-    }
 }

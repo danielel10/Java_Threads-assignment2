@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.services.GPUService;
 
@@ -43,7 +45,6 @@ public class Cluster {
 	public void SendBatchCpu (DataBatch dataBatch) {
 		int minindex = 0;
 		for (int i = 1; i < CPUvector.size(); i++) {
-			//maybe sync this
 			if(CPUvector.get(i).getQsize() < CPUvector.get(i - 1).getQsize()) {
 				minindex = i;
 			}
@@ -51,6 +52,7 @@ public class Cluster {
 		CPUvector.get(minindex).sendBatchToCPU(dataBatch);
 
 	}
+
 	public void SendBatchtoGPU(DataBatch dataBatch) {
 		GPU gpu = dataBatch.getWho_sent();
 		gpu.reciveFromCPU(dataBatch);

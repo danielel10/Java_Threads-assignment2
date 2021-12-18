@@ -53,6 +53,7 @@ public class CPUTest {
         assertTrue(before + 1 == cpu.getQsize());
     }
 
+    @Test
     public void testprocessData() {
         long start_time = System.currentTimeMillis();
         DataBatch d = cpu.processData();
