@@ -101,15 +101,22 @@ public class MessageBusImpl implements MessageBus {
 			futureEventMap.put(e,tosend);
 			LinkedList<MicroService> list = EventsMap.get(e.getClass());
 			MicroService m = list.getFirst();
-			MicroserivesQ.get(list.getFirst()).add(e);
-			list.addLast(list.getFirst());
-			list.removeFirst();
-			return tosend;
+			if (m != null) {
+				MicroserivesQ.get(list.getFirst()).add(e);
+				list.addLast(list.getFirst());
+				list.removeFirst();
+				return tosend;
+			}
+			else {
+				tosend.resolve(null);
+				return null;
+			}
+
 
 		}
 		else {
-			return null;
-		}
+			tosend.resolve(null);
+			return null;		}
 
 	}
 
@@ -120,7 +127,17 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void unregister(MicroService m) {
-		MicroserivesQ.remove(m);
+		BlockingQueue<Message> messages = MicroserivesQ.remove(m);
+		for (Message message: messages) {
+			if (message instanceof Event) {
+				Future future = futureEventMap.remove(message);
+				future.resolve(0);
+			}
+			LinkedList<MicroService> microServices = EventsMap.get(message);
+			if (microServices != null) {
+				microServices.remove(m);
+			}
+		}
 	}
 
 	@Override

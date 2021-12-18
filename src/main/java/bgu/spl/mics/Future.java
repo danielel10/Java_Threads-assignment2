@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Future<T> {
 
+	private boolean isdone;
 	private T result;
 	
 	/**
@@ -19,6 +20,7 @@ public class Future<T> {
 	 */
 	public Future() {
 		result = null;
+		isdone = false;
 	}
 	
 	/**
@@ -52,6 +54,7 @@ public class Future<T> {
 	public synchronized void resolve (T result) {
 		System.out.println("GPU resolved");
 		this.result = result;
+		isdone = true;
 		notifyAll();
 
 	}
@@ -61,7 +64,7 @@ public class Future<T> {
 	 *
      */
 	public boolean isDone() {
-		return result != null;
+		return isdone;
 	}
 	
 	/**
